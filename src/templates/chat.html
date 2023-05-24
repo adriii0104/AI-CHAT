@@ -1,86 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Corinbot</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
 </head>
 <body>
-    <h1>Corinbot</h1>
-    <div id="chat-container">
-        <div id="messages" style="overflow-y: auto; height: 300px;"></div>
+    <div class="chat-container">
+        <div id="chat-window">
+            <ul id="message-list"></ul>
+        </div>
         <div id="user-input">
-            <input type="text" id="user-message" placeholder="Escribe tu mensaje...">
-            <button id="send-btn">Enviar</button>
-            <button id="voice-btn">Hablar</button>
+            <input type="text" id="user-message" placeholder="Escribe un mensaje..." autocomplete="off">
+            <button id="send-btn" onclick="sendMessage()">Enviar</button>
         </div>
     </div>
-    
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            // Enviar mensaje al servidor y obtener respuesta del chatbot
-            function getChatbotResponse() {
-                var userMessage = $("#user-message").val();
-                if (userMessage != "") {
-                    $("#messages").append("<p><strong>Tú:</strong> " + userMessage + "</p>");
-                    $("#user-message").val("");
+        function sendMessage() {
+            var userMessage = document.getElementById("user-message").value;
+            var messageList = document.getElementById("message-list");
 
-                    $.ajax({
-                        url: "/get_response",
-                        type: "POST",
-                        data: {user_message: userMessage},
-                        success: function(response) {
-                            var formattedResponse = "<p><strong>Chatbot:</strong></p><p>" + response + "</p>";
-                            $("#messages").append(formattedResponse);
-                            $("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
-                        }
-                    });
+            // Agregar el mensaje del usuario a la lista de mensajes
+            var userMessageItem = document.createElement("li");
+            userMessageItem.classList.add("user-message");
+            userMessageItem.textContent = "Tú: " + userMessage;
+            messageList.appendChild(userMessageItem);
+
+            // Enviar el mensaje al servidor para obtener la respuesta
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var response = this.responseText;
+
+                    // Agregar la respuesta del chatbot a la lista de mensajes
+                    var chatbotMessageItem = document.createElement("li");
+                    chatbotMessageItem.classList.add("chatbot-message");
+                    chatbotMessageItem.textContent = "ChatBot: " + response;
+                    messageList.appendChild(chatbotMessageItem);
+
+                    // Limpiar el campo de entrada de usuario
+                    document.getElementById("user-message").value = "";
+
+                    // Desplazarse al final de la lista de mensajes
+                    messageList.scrollTop = messageList.scrollHeight;
                 }
-            }
-
-            // Enviar mensaje cuando se presiona Enter
-            $("#user-message").keypress(function(event) {
-                if (event.which == 13) {
-                    event.preventDefault();
-                    $("#send-btn").click();
-                }
-            });
-
-            // Enviar mensaje cuando se hace clic en el botón de enviar
-            $("#send-btn").click(function() {
-                getChatbotResponse();
-            });
-
-            // Habilitar reconocimiento de voz
-            if ('webkitSpeechRecognition' in window) {
-                var recognition = new webkitSpeechRecognition();
-                recognition.lang = 'es-ES';
-                recognition.continuous = true;
-                recognition.interimResults = true;
-
-                var voiceBtn = document.getElementById('voice-btn');
-                var userMessageInput = document.getElementById('user-message');
-
-                voiceBtn.addEventListener('click', function() {
-                    recognition.start();
-                    voiceBtn.disabled = true;
-                    voiceBtn.innerText = 'Escuchando...';
-
-                    recognition.onresult = function(event) {
-                        var transcript = event.results[event.results.length - 1][0].transcript;
-                        userMessageInput.value += transcript;
-                    };
-
-                    recognition.onend = function() {
-                        recognition.stop();
-                        voiceBtn.disabled = false;
-                        voiceBtn.innerText = 'Hablar';
-                        getChatbotResponse();
-                    };
-                });
-            } else {
-                voiceBtn.style.display = 'none';
-            }
-        });
+            };
+            xhttp.open("POST", "/get_response", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("user_message=" + userMessage);
+        }
     </script>
 </body>
 </html>
