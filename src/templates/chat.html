@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Corinbot</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Corinbot</h1>
+    <div id="chat-container">
+        <div id="messages" style="overflow-y: auto; height: 300px;"></div>
+        <div id="user-input">
+            <input type="text" id="user-message" placeholder="Escribe tu mensaje...">
+            <button id="send-btn">Enviar</button>
+            <button id="voice-btn">Hablar</button>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            // Enviar mensaje al servidor y obtener respuesta del chatbot
+            function getChatbotResponse() {
+                var userMessage = $("#user-message").val();
+                if (userMessage != "") {
+                    $("#messages").append("<p><strong>Tú:</strong> " + userMessage + "</p>");
+                    $("#user-message").val("");
+
+                    $.ajax({
+                        url: "/get_response",
+                        type: "POST",
+                        data: {user_message: userMessage},
+                        success: function(response) {
+                            var formattedResponse = "<p><strong>Chatbot:</strong></p><p>" + response + "</p>";
+                            $("#messages").append(formattedResponse);
+                            $("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+                        }
+                    });
+                }
+            }
+
+            // Enviar mensaje cuando se presiona Enter
+            $("#user-message").keypress(function(event) {
+                if (event.which == 13) {
+                    event.preventDefault();
+                    $("#send-btn").click();
+                }
+            });
+
+            // Enviar mensaje cuando se hace clic en el botón de enviar
+            $("#send-btn").click(function() {
+                getChatbotResponse();
+            });
+
+            // Habilitar reconocimiento de voz
+            if ('webkitSpeechRecognition' in window) {
+                var recognition = new webkitSpeechRecognition();
+                recognition.lang = 'es-ES';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                var voiceBtn = document.getElementById('voice-btn');
+                var userMessageInput = document.getElementById('user-message');
+
+                voiceBtn.addEventListener('click', function() {
+                    recognition.start();
+                    voiceBtn.disabled = true;
+                    voiceBtn.innerText = 'Escuchando...';
+
+                    recognition.onresult = function(event) {
+                        var transcript = event.results[event.results.length - 1][0].transcript;
+                        userMessageInput.value += transcript;
+                    };
+
+                    recognition.onend = function() {
+                        recognition.stop();
+                        voiceBtn.disabled = false;
+                        voiceBtn.innerText = 'Hablar';
+                        getChatbotResponse();
+                    };
+                });
+            } else {
+                voiceBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
