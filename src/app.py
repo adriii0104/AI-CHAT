@@ -38,7 +38,7 @@ def obtener_respuesta_gpt3(pregunta):
     respuesta = openai.Completion.create(
         engine='text-davinci-003',
         prompt=pregunta,
-        max_tokens=1100,
+        max_tokens=800,
         n=1,
         stop=None,
         temperature=0.7
