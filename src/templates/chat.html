@@ -4,19 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatBot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <style>
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typing-animation {
+            animation: typing 1s linear;
+        }
+    </style>
+        <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
 </head>
 <body>
+    <div id="chat-window">
+        <ul id="message-list"></ul>
+    </div>
     <div class="chat-container">
-        <div id="chat-window">
-            <ul id="message-list"></ul>
-        </div>
+
         <div id="user-input">
             <input type="text" id="user-message" placeholder="Escribe un mensaje..." autocomplete="off">
             <button id="send-btn" onclick="sendMessage()">Enviar</button>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     <script>
         function sendMessage() {
             var userMessage = document.getElementById("user-message").value;
@@ -28,17 +42,28 @@
             userMessageItem.textContent = "Tú: " + userMessage;
             messageList.appendChild(userMessageItem);
 
+            // Agregar animación de escritura al mensaje del chatbot
+            var typingAnimation = document.createElement("span");
+            typingAnimation.classList.add("typing-animation");
+            typingAnimation.textContent = "Corin Bot: ";
+            var chatbotMessageItem = document.createElement("li");
+            chatbotMessageItem.classList.add("chatbot-message");
+            chatbotMessageItem.appendChild(typingAnimation);
+            messageList.appendChild(chatbotMessageItem);
+
             // Enviar el mensaje al servidor para obtener la respuesta
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     var response = this.responseText;
 
+                    // Remover animación de escritura
+                    chatbotMessageItem.removeChild(typingAnimation);
+
                     // Agregar la respuesta del chatbot a la lista de mensajes
-                    var chatbotMessageItem = document.createElement("li");
-                    chatbotMessageItem.classList.add("chatbot-message");
-                    chatbotMessageItem.textContent = "ChatBot: " + response;
-                    messageList.appendChild(chatbotMessageItem);
+                    var chatbotResponseItem = document.createElement("span");
+                    chatbotResponseItem.textContent = response;
+                    chatbotMessageItem.appendChild(chatbotResponseItem);
 
                     // Limpiar el campo de entrada de usuario
                     document.getElementById("user-message").value = "";
@@ -52,5 +77,6 @@
             xhttp.send("user_message=" + userMessage);
         }
     </script>
+        <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>
