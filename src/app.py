@@ -1,27 +1,54 @@
-import os
 import json
-
+import nltk
+import spacy
+import pickle
 from flask import Flask, render_template, request
 import openai
-import nltk
-import speech_recognition as sr
+from sklearn.feature_extraction.text import CountVectorizer
 import pyttsx3
-import subprocess
 from config import mi_api
 
 app = Flask(__name__)
 
-openai.api_key = "YOUR_API_KEY"  # Reemplaza con tu clave de API
+# Configurar la clave de la API de OpenAI
+openai.api_key = mi_api
 
-# Variables globales para el aprendizaje
-conversaciones = []
+# Cargar modelo de SpaCy en español
+nlp = spacy.load('es_core_news_sm')
 
-# Archivo para guardar los cambios
+# Archivo JSON con información contextual
+ARCHIVO_CONTEXTUAL = 'contexto.json'
 ARCHIVO_CAMBIOS = 'cambios.json'
 
-# Cargar conversaciones anteriores y cambios desde el archivo
+# Crear archivos necesarios si no existen
+def crear_archivos():
+    archivos = [ARCHIVO_CONTEXTUAL, ARCHIVO_CAMBIOS]
+
+    for archivo in archivos:
+        try:
+            with open(archivo, 'r') as f:
+                pass
+        except FileNotFoundError:
+            with open(archivo, 'w') as f:
+                json.dump({}, f)
+
+# Cargar información contextual desde el archivo JSON
+def cargar_contexto():
+    try:
+        with open(ARCHIVO_CONTEXTUAL, 'r') as file:
+            contexto = json.load(file)
+    except FileNotFoundError:
+        contexto = {}
+
+    return contexto
+
+# Guardar información contextual en el archivo JSON
+def guardar_contexto(contexto):
+    with open(ARCHIVO_CONTEXTUAL, 'w') as file:
+        json.dump(contexto, file)
+
+# Cargar datos previos desde el archivo
 def cargar_datos():
-    global conversaciones
     try:
         with open('conversaciones.json', 'r') as file:
             conversaciones = json.load(file)
@@ -36,8 +63,8 @@ def cargar_datos():
 
     return conversaciones, cambios
 
-# Guardar conversaciones y cambios en el archivo
-def guardar_datos():
+# Guardar datos en los archivos correspondientes
+def guardar_datos(conversaciones, cambios):
     with open('conversaciones.json', 'w') as file:
         json.dump(conversaciones, file)
 
@@ -46,16 +73,12 @@ def guardar_datos():
 
 # Obtener respuesta utilizando la API de OpenAI
 def obtener_respuesta_gpt3(pregunta):
-    global conversaciones
+    global conversaciones, cambios
 
-    # Verificar si se solicita una modificación en la carpeta
-    if pregunta.startswith('modificar carpeta'):
-        comando = pregunta.replace('modificar carpeta', '').strip()
-        try:
-            subprocess.run(comando, shell=True, check=True)
-            return 'Carpeta modificada exitosamente'
-        except subprocess.CalledProcessError as e:
-            return f'Error al modificar la carpeta: {str(e)}'
+    # Cargar información contextual
+    contexto = cargar_contexto()
+    contexto['pregunta'] = pregunta
+    guardar_contexto(contexto)
 
     conversacion_actual = conversaciones + [(pregunta, '')]
     entrada = '\n'.join(f'Usuario: {user}\nBot: {bot}' for user, bot in conversacion_actual)
@@ -69,104 +92,70 @@ def obtener_respuesta_gpt3(pregunta):
     )
     nueva_respuesta = respuesta.choices[0].text.strip()
 
-    # Actualizar la conversación con la nueva respuesta
-    conversaciones.append((pregunta, nueva_respuesta))
+    # Agregar la nueva respuesta al cerebro de conversaciones sin consumir todos los tokens
+    if len(conversaciones) > 0:
+        tokens_cerebro = sum(len(nltk.word_tokenize(bot)) for _, bot in conversaciones)
+        tokens_nueva_respuesta = len(nltk.word_tokenize(nueva_respuesta))
+        if tokens_cerebro + tokens_nueva_respuesta <= 4096:  # Límite máximo de tokens
+            conversaciones.append((pregunta, nueva_respuesta))
 
-    # Guardar las conversaciones actualizadas en el archivo
-    guardar_datos()
+    # Guardar cambios en el archivo
+    guardar_datos(conversaciones, cambios)
 
     return nueva_respuesta
 
-# Ejecutar código proporcionado
-def ejecutar_codigo(codigo):
-    try:
-        exec(codigo)
-        return 'Código ejecutado correctamente'
-    except Exception as e:
-        return f'Error al ejecutar el código: {str(e)}'
+# Realizar aprendizaje activo para mejorar las respuestas
+def aprendizaje_activo(pregunta, respuesta):
+    global cambios
 
-# Ruta principal de la aplicación
+    if pregunta.strip() == '':
+        return
+
+    if respuesta.strip() == '':
+        return
+
+    # Tokenizar la pregunta
+    tokenizer = CountVectorizer().build_tokenizer()
+    tokens = tokenizer(pregunta.lower())
+
+    # Realizar aprendizaje activo solo si la pregunta tiene más de 3 palabras
+    if len(tokens) <= 3:
+        return
+
+    # Agregar la pregunta y su respuesta al diccionario de cambios
+    cambios[pregunta.lower()] = respuesta
+
+    # Guardar cambios en el archivo
+    guardar_datos(conversaciones, cambios)
+
+# Convertir texto a voz utilizando pyttsx3
+def convertir_texto_a_voz(texto):
+    engine = pyttsx3.init()
+    engine.save_to_file(texto, 'respuesta.wav')
+    engine.runAndWait()
+
 @app.route('/')
-def home():
+def index():
     return render_template('chat.html')
 
-# Ruta para procesar las solicitudes del chatbot
 @app.route('/get_response', methods=['POST'])
 def get_response():
-    user_message = request.form['user_message']
-    response_text = obtener_respuesta_gpt3(user_message)
+    mensaje = request.form['user_message']
+    response = obtener_respuesta_gpt3(mensaje)
 
-    return response_text
+    # Realizar aprendizaje activo
+    aprendizaje_activo(mensaje, response)
 
-# Ruta para procesar las solicitudes de voz del chatbot
-@app.route('/get_voice_response', methods=['POST'])
-def get_voice_response():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
+    # Convertir la respuesta de texto a voz
+    convertir_texto_a_voz(response)
 
-    with microphone as source:
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
-
-    user_message = recognizer.recognize_google(audio, language='es')
-    response_text = obtener_respuesta_gpt3(user_message)
-
-    return response_text
-
-# Ruta para recibir las instrucciones de modificación del código
-@app.route('/modificar_codigo', methods=['POST'])
-def modificar_codigo():
-    cambios = request.json  # Se espera un JSON con las instrucciones de modificación
-
-    # Verificar si se proporcionaron instrucciones de modificación
-    if cambios is None:
-        return 'No se proporcionaron instrucciones de modificación'
-
-    # Verificar si el cambio solicitado es válido
-    if 'codigo' not in cambios:
-        return 'No se proporcionó el cambio de código'
-
-    # Obtener el nuevo código del JSON
-    nuevo_codigo = cambios['codigo']
-
-    resultado = ejecutar_codigo(nuevo_codigo)
-
-    return resultado
-
-# Función para borrar un archivo
-def borrar_archivo(nombre_archivo):
-    try:
-        os.remove(nombre_archivo)
-        return f"El archivo '{nombre_archivo}' ha sido eliminado exitosamente."
-    except OSError as e:
-        return f"No se pudo borrar el archivo '{nombre_archivo}'. Error: {str(e)}."
-
-# Ruta para procesar las solicitudes de borrado de archivo
-@app.route('/borrar_archivo', methods=['POST'])
-def borrar_archivo_route():
-    datos = request.json  # Se espera un JSON con el nombre del archivo a borrar
-
-    # Verificar si se proporcionó el nombre del archivo
-    if 'nombre_archivo' not in datos:
-        return 'No se proporcionó el nombre del archivo a borrar.'
-
-    nombre_archivo = datos['nombre_archivo']
-    resultado = borrar_archivo(nombre_archivo)
-
-    return resultado
+    return response
 
 if __name__ == '__main__':
-    nltk.download('punkt')  # Descargar datos necesarios para nltk
+    crear_archivos()
 
-    # Cargar conversaciones anteriores y cambios desde el archivo al iniciar la aplicación
+    # Cargar datos previos
     conversaciones, cambios = cargar_datos()
 
-    # Actualizar el código del archivo
-    with open(__file__, 'r') as file:
-        codigo_actual = file.read()
-    cambios['codigo'] = codigo_actual
-
-    # Guardar los cambios en el archivo
-    guardar_datos()
-
+    # Iniciar la aplicación Flask
     app.run(debug=True)
