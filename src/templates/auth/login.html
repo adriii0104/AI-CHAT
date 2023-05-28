@@ -1,0 +1,45 @@
+
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+<head>    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}"></head>
+  <div class="content">
+     <div class="log-in-card">
+
+
+
+
+      {% if error %}
+      <script> var error = '{{ error }}'; </script>
+      <div id="error"></div>
+      {% endif %}
+
+
+
+    <h2>Iniciar Sesión</h2>
+      <form method="post" onsubmit="return validarFormulario()">
+        <div class="user-box">
+          <span><i class="fi fi-ss-circle-envelope"></i></span>
+          <input type="text" id="usuario"  name="usuario" autocomplete="on" required>
+          <label>Email</label>
+        </div>
+
+      <div class="user-box">
+        <span><i class="fi fi-sr-lock"></i></span>
+        <input type="password" id="contraseña" name="contraseña" autocomplete="on" required>
+          <label>Password</label>
+      </div><br>
+      <div class="remember-forgot">
+        <label><input type="checkbox">Remember me</label>
+        <a href="">Forgot Password?</a>
+      </div><br>
+        <button id="button" name="login" >Ingresar</button><br><br>
+      </form>
+  </div>
+</div>
+</section>
+<script src="{{ url_for('static', filename='JS/login.js') }}"></script>
+</body>
+{% endblock %}

@@ -1,0 +1,56 @@
+
+
+{% extends 'base.html' %}
+
+{% block body %}
+<head>    <link rel="stylesheet" href="{{ url_for('static', filename='styles/register.css') }}"></head>
+  <div class="content">
+     <div class="log-in-card">
+
+
+
+
+      {% if error %}
+      <script> var error = '{{ error }}'; </script>
+      <div id="error"></div>
+      {% endif %}
+
+
+    <h2>Registrate</h2>
+      <form method="post" onsubmit="return validarFormulario()">
+        
+        <div class="user-box">
+          <span><i class="fi fi-sr-id-card-clip-alt"></i></i></span>
+          <input type="text" id="nombre"  name="nombre" autocomplete="on" required>
+          <label>Nombre</label>
+        </div>
+
+      <div class="user-box">
+        <span><i class="fi fi-sr-user"></i></span>
+        <input type="text" id="Apellido" name="Apellido" autocomplete="on" required>
+          <label>Apellido</label>
+      </div>
+      <div class="user-box">
+        <span><i class="fi fi-bs-envelope"></i></span>
+        <input type="email" id="email" name="email" autocomplete="on" required>
+          <label>Email</label>
+      </div>
+
+      <div class="user-box">
+        <span><i class="fi fi-sr-lock"></i></span>
+        <input type="password" id="CContraseña" name="Contraseña" autocomplete="on" required>
+          <label>Contraseña</label>
+      </div>
+
+
+      <div class="remember-forgot">
+        <a href="">Ya tengo cuenta?</a>
+      </div><br>
+        <button id="button" name="login" >Ingresar</button><br><br>
+      </form>
+  </div>
+</div>
+</section>
+<script src="{{ url_for('static', filename='JS/login.js') }}"></script>
+</body>
+{% endblock %}

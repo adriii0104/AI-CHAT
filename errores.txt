@@ -1,0 +1,2 @@
+'NoneType' object has no attribute 'find_all'
+'NoneType' object has no attribute 'find_all'

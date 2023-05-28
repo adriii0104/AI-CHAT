@@ -1,0 +1,107 @@
+/* styles.css */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.chat-container {
+    font-family: "Poppins", sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#chat-window {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: "Poppins", sans-serif;
+}
+
+#user-input {
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    font-family: "Poppins", sans-serif;
+    position: fixed;
+    bottom: 0;
+    width: 70%;
+}
+
+#user-message {
+    flex-grow: 1;
+    padding: 15px 275px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    border-radius: 5px;
+    font-family: "Poppins", sans-serif;
+}
+
+#send-btn {
+    margin-left: 0px;
+    margin-bottom: 4px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.95em;
+}
+#send-btn:hover {
+    color: rgb(17, 98, 112);
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    font-family: "Poppins", sans-serif;
+}
+
+.user-message {
+    background-color: #ffffff;
+    height: 15px auto;
+    list-style: none;
+}
+
+.bot-message {
+    background-color: #f8f8f8;
+    height: 75px auto !important;
+    min-height: 600px !important;
+    list-style: none;
+    border-top: 1px;
+    border-bottom-width: 1px;
+    border-color: rgba(0,0,0,.1);
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    font-family: 'Hind Madurai', sans-serif;
+}
+
+.voice-message {
+    background-color: #fff4e2;
+}
+
+.message-content {
+    margin: 0;
+}
+#audio-btn{
+    background: transparent;
+    border: none;
+    font-size: 1.95em;
+}
+#audio-btn:hover {
+    color: rgb(17, 98, 112);
+}
+a{
+    position: absolute;
+    top: 10%;
+    left: 90%;
+    transform: translate(-50%, -50%) !important;
+    color: rgb(47, 49, 49);
+    text-decoration: none;
+    font-size: 1.65em;
+    border-bottom: 2px solid black;
+    
+    
+}
