@@ -1,8 +1,6 @@
 function togglePasswordVisibility() {
   var contraseñaInput = document.getElementById("contraseña");
   var iconoOjo = document.querySelector(".fi-sr-eye");
-  console.log(contraseñaInput); // Debugging
-  console.log(iconoOjo); // Debugging
 
   if (contraseñaInput.type == "password") {
     contraseñaInput.type = "text";
