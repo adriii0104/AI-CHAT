@@ -64,7 +64,9 @@ body {
     border-radius: 3pt;
     font-size: 0.9em;
 }
-
+.user-box{
+    position: relative;
+}
 .user-box input:focus {
     outline: none;
     border: 1px solid #000;
@@ -73,6 +75,15 @@ body {
     -webkit-transition:.2s;
     -moz-transition:.2s;
 }
+.password-toggle {
+    position: absolute;
+    top: 71%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 
 .content .close {
     color: white !important;

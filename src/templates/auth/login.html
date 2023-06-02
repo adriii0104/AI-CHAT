@@ -8,6 +8,7 @@
   <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 </head>
 
 <div class="content">
@@ -32,12 +33,14 @@
       <p class="log">Or log with Mail</p>
     </div>
 
-    <form method="post" >
+    <form method="post">
       <div class="user-box">
         <input type="text" id="email" oninput="validate()" name="email" placeholder="Email" autocomplete="on" required>
       </div>
+      
       <div class="user-box">
-        <input type="password" id="contraseña" oninput="validate()" name="contraseña" placeholder="Contraseña" autocomplete="on" required>
+        <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" autocomplete="on" required>
+        <span class="password-toggle" onclick="togglePasswordVisibility()"><i class="fi fi-sr-eye"></i></span>
       </div>
       <br>
       {% if error %}
@@ -45,16 +48,15 @@
       {% endif %}
 
       <a href="{{ url_for ('register') }}">
-      <p class="redirect">¿Don't have account?</p>
+      <p class="redirect">¿Don't have an account?</p>
       </a>
 
 
-      <button class="i-button-register" id="button" >Log In</button><br><br><br><br><br>
+      <button class="i-button-register" id="button">Log In</button><br><br><br><br><br>
     </form>
   </div>
 </div>
-</section>
 
+<script src="{{ url_for('static', filename='JS/login.js') }}"></script>
 </body>
-<script src="{{ url_for('static', filename='JS/register.js') }}"></script>
 {% endblock %}

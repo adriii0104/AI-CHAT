@@ -1,5 +1,16 @@
-if (error !== '') {
-    document.getElementById('error').innerHTML = "Usuario o contraseña incorrectos";
-    document.getElementById('usuario').style.borderBottom ="2px solid #9b0b0b;"
-    document.getElementById('contraseña').style.borderBottom ="2px solid #9b0b0b;"
+function togglePasswordVisibility() {
+  var contraseñaInput = document.getElementById("contraseña");
+  var iconoOjo = document.querySelector(".fi-sr-eye");
+  console.log(contraseñaInput); // Debugging
+  console.log(iconoOjo); // Debugging
+
+  if (contraseñaInput.type == "password") {
+    contraseñaInput.type = "text";
+    iconoOjo.classList.remove("fi-sr-eye");
+    iconoOjo.classList.add("fi-sr-eye-crossed");
+  } else {
+    contraseñaInput.type = "password";
+    iconoOjo.classList.remove("fi-sr-eye-crossed");
+    iconoOjo.classList.add("fi-sr-eye");
+  }
 }
