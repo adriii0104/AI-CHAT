@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typing-animation {
+            animation: typing 1s linear;
+        }
+
+        .listening {
+            color: red;
+        }
+    </style>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/plantilla.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-thin-straight/css/uicons-thin-straight.css'>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='IMGS/favicon.png') }}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-thin-rounded/css/uicons-thin-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <title>Chat Genuine</title>
+</head>
+<body>
+    <header>
+        <h2 class="logo">
+            <img src="https://www.shutterstock.com/image-vector/leaves-vector-icon-isolated-on-600w-1191567352.jpg" alt="" width="15px">
+            Genuine
+        </h2>
+        <nav class="navigation">
+            <a href="">Home</a>
+            <a href="https://github.com/adriii0104">GitHub <i class="fi fi-brands-github"></i></a>
+            <a href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">LinkedIn <i class="fi fi-brands-linkedin"></i></a>
+            <a href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">Documentación </a>
+            <a href="">Contacto <i class="fi fi-rs-angle-small-down"></i></a>
+            <a class="href" href="{{ url_for('salir') }}"><i class="fi fi-tr-circle-xmark"></i></a>
+        </nav>
+    </header>
+</body>
+{% block chat %}
+
+{% endblock %}

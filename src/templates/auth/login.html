@@ -1,45 +1,60 @@
+{% extends './plantillas/base.html' %}
 
-{% extends 'base.html' %}
-
+{% block href %} Login {% endblock %}
 
 {% block body %}
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth.css') }}">
+  <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+</head>
 
-<head>    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}"></head>
-  <div class="content">
-     <div class="log-in-card">
+<div class="content">
+  <div class="log-in-card">
+    <div class="close">
+      <a href="{{ url_for('home') }}">
+        <i class="fi fi-ss-rectangle-xmark"></i>
+      </a>
+    </div>
 
+    <p>Log in your account <img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
+    <div id="altern-log">
+      <p>Sign in with</p>
+      <i class="fi fi-brands-apple"></i>
+      <i class="fi fi-brands-google"></i>
+      <i class="fi fi-brands-facebook"></i>
+      <i class="fi fi-brands-github"></i>
+      <i class="fi fi-brands-microsoft"></i>
+    </div><br><br><br><br>
 
+    <div id="text-indication">
+      <p class="log">Or log with Mail</p>
+    </div>
 
-
+    <form method="post" >
+      <div class="user-box">
+        <input type="text" id="email" oninput="validate()" name="email" placeholder="Email" autocomplete="on" required>
+      </div>
+      <div class="user-box">
+        <input type="password" id="contraseña" oninput="validate()" name="contraseña" placeholder="Contraseña" autocomplete="on" required>
+      </div>
+      <br>
       {% if error %}
-      <script> var error = '{{ error }}'; </script>
-      <div id="error"></div>
+      <div id="error">{{ error }}</div>
       {% endif %}
 
+      <a href="{{ url_for ('register') }}">
+      <p class="redirect">¿Don't have account?</p>
+      </a>
 
 
-    <h2>Iniciar Sesión</h2>
-      <form method="post" onsubmit="return validarFormulario()">
-        <div class="user-box">
-          <span><i class="fi fi-ss-circle-envelope"></i></span>
-          <input type="text" id="usuario"  name="usuario" autocomplete="on" required>
-          <label>Email</label>
-        </div>
-
-      <div class="user-box">
-        <span><i class="fi fi-sr-lock"></i></span>
-        <input type="password" id="contraseña" name="contraseña" autocomplete="on" required>
-          <label>Password</label>
-      </div><br>
-      <div class="remember-forgot">
-        <label><input type="checkbox">Remember me</label>
-        <a href="">Forgot Password?</a>
-      </div><br>
-        <button id="button" name="login" >Ingresar</button><br><br>
-      </form>
+      <button class="i-button-register" id="button" >Log In</button><br><br><br><br><br>
+    </form>
   </div>
 </div>
 </section>
-<script src="{{ url_for('static', filename='JS/login.js') }}"></script>
+
 </body>
+<script src="{{ url_for('static', filename='JS/register.js') }}"></script>
 {% endblock %}

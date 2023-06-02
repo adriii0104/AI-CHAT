@@ -3,10 +3,14 @@ body {
     font-family: "Poppins", sans-serif;
     margin: 0;
     padding: 0;
+    background: url(../IMGS/hero-iconizer_x1_old.jpg) no-repeat;
+    background-position: center center;
+    background-size: 50%;
+
 }
 
 .chat-container {
-    font-family: "Poppins", sans-serif;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     max-width: 800px;
     margin: 20px auto;
     border-radius: 5px;
@@ -14,17 +18,21 @@ body {
 }
 
 #chat-window {
+    margin-top: auto;
+    margin-bottom: 120px;
     padding: 20px;
     max-height: 400px;
     overflow-y: auto;
-    font-family: "Poppins", sans-serif;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    display: flex;
+    flex-direction: column-reverse; /* Cambio en la dirección de la columna */
 }
 
 #user-input {
     display: flex;
     align-items: center;
     padding: 40px;
-    font-family: "Poppins", sans-serif;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     position: fixed;
     bottom: 0;
     width: 70%;
@@ -59,15 +67,14 @@ body {
 }
 
 .user-message {
-    background-color: #ffffff;
+    background-color: #fafafa;
     height: 15px auto;
     list-style: none;
 }
 
 .bot-message {
-    background-color: #f8f8f8;
+    background-color: transparent;
     height: 75px auto !important;
-    min-height: 600px !important;
     list-style: none;
     border-top: 1px;
     border-bottom-width: 1px;
@@ -93,7 +100,7 @@ body {
 #audio-btn:hover {
     color: rgb(17, 98, 112);
 }
-a{
+.href{
     position: absolute;
     top: 10%;
     left: 90%;
@@ -102,6 +109,8 @@ a{
     text-decoration: none;
     font-size: 1.65em;
     border-bottom: 2px solid black;
-    
-    
+}
+#user-input i{
+    vertical-align: middle;
+    margin-left: 25px;
 }

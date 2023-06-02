@@ -1,0 +1,54 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: url(../IMGS/hero-iconizer_x1_old.jpg) no-repeat;
+    background-position: center center;
+    background-size: 50%;
+}
+#principal {
+    position: absolute;
+    text-align: center;
+    top: 40%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+#principal h4{
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size: 1.25em;
+    font-weight: 500;
+}
+#principal button{
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    border: none;
+    color: #ffff;
+    background: rgb(0, 0, 0);
+    border-radius: 6px;
+    padding: 15px 85px;
+    font-weight: 500;
+}
+#principal button:hover{
+    color: #ffff;
+    background: rgb(22, 22, 22);
+    cursor: pointer;
+}
+#txt p{
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size: 1.25em;
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #636363;
+    font-weight: lighter;
+    text-align: center;
+
+
+
+}

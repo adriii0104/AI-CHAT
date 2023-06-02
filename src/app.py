@@ -1,13 +1,18 @@
 import json
+import random
+import string
 import nltk
 import spacy
 import pyttsx3
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, url_for, redirect, session,flash
 import openai
 from sklearn.feature_extraction.text import CountVectorizer
 from flask_mysqldb import MySQL
 from config import mi_api, SECRET
 import speech_recognition as sr
+from apis import error
+from utils.verificacion import enviar_correo
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
@@ -140,6 +145,10 @@ def aprendizaje_activo(pregunta, respuesta, cambios):
     # Guardar cambios en el archivo
     guardar_conversaciones(cambios)
 
+
+
+
+
 # Convertir texto a voz utilizando pyttsx3
 def convertir_texto_a_voz(texto):
     engine = pyttsx3.init()
@@ -148,35 +157,105 @@ def convertir_texto_a_voz(texto):
 
 # Estos son los corredores, ej. login, register, chat, etc.
 
+
+
+
+
+
+
+
+
+
 @app.before_request
 def before_request():
-    allowed_routes = ['login', 'register']
+    allowed_routes = ['login', 'register', 'home']
     if 'usuario' in session and request.endpoint in allowed_routes:
-        return redirect(url_for('index'))
+            if session['verificado'] == "NO":
+                return redirect(url_for('verificacion'))
+            else:
+               return redirect(url_for('index'))
     elif 'usuario' not in session and request.endpoint not in allowed_routes and not request.path.startswith('/static'):
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
+
+
+
+
+
+
+
+
+
 
 # Registro
-@app.route('/auth/register')
+@app.route('/auth/register', methods=["POST", "GET"])
 def register():
-    return render_template('auth/register.html')
+    if request.method == "POST":
+            nombre = request.form.get('nombre')
+            email = request.form.get('email')
+            password = request.form.get('contraseña')
+            code = 0
+            reason = "NO"
+            numeros = ''.join(random.choices(string.digits, k=4))
+            codigo = "BLID" + numeros
+            cur1 = mysql.connection.cursor()
+            cur1.execute("SELECT usuario from usuarios Where usuario = %s", (email, ))
+            user = cur1.fetchone()
+            if user is None:
 
+                cur1 = mysql.connection.cursor()
+                cur1.execute("INSERT INTO verificacion VALUES (%s, %s, %s, %s)",
+                             (codigo, reason, numeros, datetime.now()))
+                
+                cur1.close()
+
+                cur = mysql.connection.cursor()
+                cur.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s)",
+                             (code, codigo, nombre, email, password))
+                
+                mysql.connection.commit()
+
+                return redirect(url_for('login'))
+            else:
+                return render_template('auth/register.html', error=error)
+    else:
+        return render_template('auth/register.html')
+
+
+
+# Login
 # Login
 @app.route('/auth', methods=["POST", "GET"])
 def login():
     if request.method == 'POST':
-        usuario = request.form['usuario']
+        usuario = request.form['email']
         contraseña = request.form['contraseña']
 
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM usuarios WHERE usuario = %s ", (usuario,))
         user = cur.fetchone()
         cur.close()
+
         if user is not None:
-            contraseñaalma = user[1]
+            contraseñaalma = user[4]
             if contraseña == contraseñaalma:
-                session['usuario'] = user[0]
-                return redirect(url_for('index'))
+                session['id'] = user[0]
+                session['idgenuine'] = user[1]
+                session['nombre'] = user[2]
+                session['usuario'] = user[3]
+
+                cur1 = mysql.connection.cursor()
+                cur1.execute("SELECT * FROM verificacion WHERE idblid = %s ", (session['idgenuine'],))
+                verificacion = cur1.fetchone()
+                cur1.close()
+
+                if verificacion is not None:
+                    session['verificado'] = verificacion[1]
+                    if session['verificado'] == "NO":
+                        return redirect(url_for('verificacion'))
+                    else:
+                        return redirect(url_for('index'))
+                else:
+                    return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
             else:
                 return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
         else:
@@ -184,16 +263,107 @@ def login():
     else:
         return render_template('auth/login.html')
 
+
+
+from flask import request, redirect, url_for
+
+@app.route('/auth/verificacion', methods=["GET", "POST"])
+def verificacion():
+    if request.method == 'POST':
+        codigo = request.form['codigo']
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM verificacion WHERE idblid = %s ", (session.get('idgenuine'),))
+        codigov = cur.fetchone()
+        cur.close()
+        if codigov is not None:
+            if codigo == codigov[2]:
+                idgenuine = session['idgenuine']
+                cur = mysql.connection.cursor()
+                cur.execute("UPDATE verificacion SET verificado = %s WHERE idblid = %s", ("SI", idgenuine))
+                mysql.connection.commit()
+                cur.close()
+                session['verificado'] = "SI"
+                return redirect(url_for('index'))
+            else:
+                return render_template('auth/verificacion.html', error='Código incorrecto')
+    else:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM verificacion WHERE idblid = %s ", (session.get('idgenuine'),))
+        code = cur.fetchone()
+        cur.close()
+        if code is None or code[2] is None:
+            return render_template('auth/verificacion.html', error='No se encontró ningún código')
+        else:
+            destinatario = session.get('usuario')
+            asunto = 'Tu código de verificación Genuine'
+            contenido = 'Aquí está tu código de verificación de Genuine: {}'
+            
+            # Verificar si ya se envió un código de verificación antes
+            if 'codigo_enviado' not in session:
+                enviar_correo(destinatario, asunto, contenido.format(code[2]))
+                session['codigo_enviado'] = True  # Establecer la bandera de código enviado
+            
+        return render_template('auth/verificacion.html')
+
+    return redirect(url_for('index'))
+
+
+
+
+
+
+@app.route('/auth/verificacion/resend')
+def resend():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM verificacion WHERE idblid = %s", (session.get('idgenuine'),))
+    code = cur.fetchone()
+    cur.close()
+
+    if code is not None and code[2] is not None:
+        nuevo_codigo = ''.join(random.choices(string.digits, k=4))
+        destinatario = session.get('usuario')
+        idgenuine = session.get('idgenuine')
+        cur1 = mysql.connection.cursor()
+        cur1.execute("UPDATE verificacion SET codigo = %s WHERE idblid = %s",
+        (nuevo_codigo, idgenuine))
+        mysql.connection.commit()
+        cur1.close()
+        asunto = 'Tu código de verificación Genuine'
+        contenido = 'Aquí está tu nuevo código de verificación de Genuine: {}'
+        contenido = contenido.format(nuevo_codigo)
+        enviar_correo(destinatario, asunto, contenido)
+        
+        
+        # Redireccionar a la vista actual en lugar de 'verificacion'
+        return redirect(url_for('verificacion', error = "Se ha enviado un nuevo codigo de verificacion"))
+    else:
+        return render_template('auth/verificacion.html', error='No se encontró ningún código')
+
+
+
+
+
+
+
+
+
+
 # Cierre de sesión
 @app.route('/salir')
 def salir():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 # Ruta principal, chat
 @app.route('/')
 def index():
     return render_template('chat.html')
+
+
+@app.route('/home')
+def home():
+    return render_template('index.html')
+
 
 
 
@@ -222,10 +392,6 @@ def speech_to_text():
     except Exception as e:
         # Manejar cualquier error que ocurra durante el reconocimiento de voz
         return str(e)
-
-
-
-
 
 
 

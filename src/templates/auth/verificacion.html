@@ -1,0 +1,48 @@
+{% extends './plantillas/plantilla-chat.html' %}
+
+
+{% block chat %}
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/verificacion.css') }}">
+  <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+</head>
+
+<div class="content">
+  <div class="log-in-card">
+    <div class="close">
+      <a href="{{ url_for('home') }}">
+        <i class="fi fi-ss-rectangle-xmark"></i>
+      </a>
+    </div>
+
+    <p><img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
+    <div id="altern-log">
+      <p>
+        Te hemos enviado un codigo a {{ session['usuario'] }}. <br>
+        Por favor desde que lo recibas escribelo.
+    </p>
+    {% if error %}
+    <div id="error">{{ error }}</div>
+    {% endif %}
+    </div><br><br><br><br>
+
+    <div id="text-indication">
+        <a href="{{ url_for ('resend') }}">
+      <p class="log">Resend code</p>
+    </a>
+    </div>
+
+    <form method="post" >
+      <div class="user-box">
+        <input id="codigo" oninput="validate()" name="codigo" placeholder="Código" autocomplete="on" required><br><br><br>
+      </div>
+      <button class="i-button-register" id="button" >Verificate</button><br><br><br><br><br>
+    </form>
+  </div>
+</div>
+</section>
+
+</body>
+{% endblock %}

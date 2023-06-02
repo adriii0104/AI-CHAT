@@ -1,56 +1,84 @@
+{% extends './plantillas/base.html' %}
 
-
-{% extends 'base.html' %}
+{% block href %} Login {% endblock %}
 
 {% block body %}
-<head>    <link rel="stylesheet" href="{{ url_for('static', filename='styles/register.css') }}"></head>
-  <div class="content">
-     <div class="log-in-card">
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth.css') }}">
+  <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+</head>
 
+<div class="content">
+  <div class="log-in-card">
+    <div class="close">
+      <a href="{{ url_for('home') }}">
+        <i class="fi fi-ss-rectangle-xmark"></i>
+      </a>
+    </div>
 
+    <p>Create account <img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
+    <div id="altern-log">
+      <p>Register with</p><br>
+      <i class="fi fi-brands-apple"></i>
+      <i class="fi fi-brands-google"></i>
+      <i class="fi fi-brands-facebook"></i>
+      <i class="fi fi-brands-github"></i>
+      <i class="fi fi-brands-microsoft"></i>
+    </div><br><br><br>
 
+    <div id="text-indication">
+      <p style="font-size: 0.95em; border-bottom: 1px solid #80808052;">Or register with email</p>
+      <p class="error-email" id="error-email"></p>
+    </div>
 
-      {% if error %}
-      <script> var error = '{{ error }}'; </script>
-      <div id="error"></div>
-      {% endif %}
-
-
-    <h2>Registrate</h2>
-      <form method="post" onsubmit="return validarFormulario()">
-        
-        <div class="user-box">
-          <span><i class="fi fi-sr-id-card-clip-alt"></i></i></span>
-          <input type="text" id="nombre"  name="nombre" autocomplete="on" required>
-          <label>Nombre</label>
-        </div>
-
+    <form method="post" onsubmit="return check()">
       <div class="user-box">
-        <span><i class="fi fi-sr-user"></i></span>
-        <input type="text" id="Apellido" name="Apellido" autocomplete="on" required>
-          <label>Apellido</label>
+        <input type="text" id="nombre" oninput="validate()" name="nombre" placeholder="Nombre" autocomplete="on" required>
       </div>
       <div class="user-box">
-        <span><i class="fi fi-bs-envelope"></i></span>
-        <input type="email" id="email" name="email" autocomplete="on" required>
-          <label>Email</label>
-      </div>
+        <input type="text" id="email" oninput="validate()" name="email" placeholder="Email" autocomplete="on" required>
 
+
+      </div>
       <div class="user-box">
-        <span><i class="fi fi-sr-lock"></i></span>
-        <input type="password" id="CContraseña" name="Contraseña" autocomplete="on" required>
-          <label>Contraseña</label>
+        <input type="password" id="contraseña" oninput="validate()" name="contraseña" placeholder="Contraseña" autocomplete="on" required>
       </div>
+      <div class="user-box">
+        <input type="password" id="ccontraseña" oninput="validate()" placeholder="Confirmar contraseña" autocomplete="on" required>
+      </div>
+      <br>
 
-
-      <div class="remember-forgot">
-        <a href="">Ya tengo cuenta?</a>
+      <div class="terms-and-conditions">
+        <div class="field">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">
+            Agree to <span> Terms and Conditions & Privacy Policy</span>
+          </label><br><br>
+          <input type="checkbox" id="terms1" required>
+          <label for="terms1">
+            Agree to <span> Terms and Conditions </span> from chat user.
+          </label>
+        </div><br>
+        <p id="errorregister" class="error"></p>
       </div><br>
-        <button id="button" name="login" >Ingresar</button><br><br>
-      </form>
+      <button class="i-button-register" id="button" disabled="true">Register</button><br><br>
+    </form>
   </div>
 </div>
 </section>
-<script src="{{ url_for('static', filename='JS/login.js') }}"></script>
+
+
 </body>
+<script src="{{ url_for('static', filename='JS/register.js') }}"></script>
+{% if error %}
+<script>
+  var error = '{{ error }}';
+  if (error) {
+    document.getElementById('email').style.border = "1px solid red";
+    document.getElementById('error-email').innerText = error
+  }
+</script>
+{% endif %}
 {% endblock %}

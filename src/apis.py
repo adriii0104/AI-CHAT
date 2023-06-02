@@ -12,3 +12,7 @@ def obtener_informacion_wikipedia(palabra_clave):
                 return page['extract']
 
     return None
+
+
+
+error = "El email ya está registrado"

@@ -1,0 +1,32 @@
+{% extends './plantillas/base.html' %}
+
+{% block body %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+    <style>
+        #principal {
+            animation: floatAnimation 1.5s infinite alternate;
+        }
+        
+        @keyframes floatAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(20px);
+            }
+        }
+    </style>
+</head>
+<div id="principal">
+    <h4>Genuine Chat</h4>
+    <p>Welcome to the best AI Chat</p><br><br>
+    <a href="{{ url_for('register') }}">
+    <button>Empezar</button></a>
+</div>
+<div id="txt">
+<p>
+    ¡Prepárate para el futuro con Genuine, el chatbot que está un paso adelante! Descubre una nueva dimensión de conocimiento, precisión y capacidad de procesamiento. No pierdas más tiempo, únete a la revolución de la IA y déjate sorprender por Genuine.
+</p>
+</div>
+{% endblock %}

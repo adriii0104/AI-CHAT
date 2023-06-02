@@ -1,36 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+
+{% extends 'plantillas/plantilla-chat.html' %}
+
+    {% block chat %}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <style>
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        .typing-animation {
-            animation: typing 1s linear;
-        }
-
-        .listening {
-            color: red;
-        }
-    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-thin-rounded/css/uicons-thin-rounded.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
 </head>
-<body>
-    <a href="{{ url_for('salir') }}"><i class="fi fi-tr-circle-xmark"></i></a>
+
     <div id="chat-window">
         <ul id="message-list"></ul>
     </div>
@@ -129,3 +104,4 @@
     <script src="{{ url_for('static', filename='JS/scripts.js') }}"></script>
 </body>
 </html>
+{% endblock %}
