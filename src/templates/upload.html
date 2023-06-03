@@ -1,0 +1,44 @@
+{% extends 'plantillas/plantilla-chat.html' %}
+
+{% block chat %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/upload.css') }}">
+</head>
+<body>
+
+    <div id="reader">
+        <h2>PDF READER</h2>
+        <h6>Instrucciones:</h6>
+        <ol>
+            <li>Asegúrate de que el archivo a escanear sea un archivo PDF válido.</li><br>
+            <li>Verifica que el archivo PDF esté legible y no sea un escaneo de baja calidad.</li> <br>
+            <li>Si el archivo PDF está protegido por contraseña, asegúrate de tener la contraseña correcta para desbloquearlo.</li> <br>
+            <li>El tamaño máximo permitido para el archivo PDF es de 20 MB.</li> <br>
+            <li>Asegúrate de seleccionar el archivo correcto antes de hacer clic en el botón de carga.</li>
+        </ol>
+        <div>
+            <select name="" id="">
+                <option value="">Tipo de escaneo</option>
+                <option value="read">Read</option>
+                <option value="print">Print</option>
+                <option value="pdf">PDF SCAN</option>
+
+            </select>
+        </div>
+    </div>
+    <div id="chat-window">
+        <ul id="message-list"></ul>
+    </div>
+    <div class="chat-container">
+        <div id="user-input">
+            <form action="/read/pdf" method="post" enctype="multipart/form-data">
+                <label for="pdf_file" id="upload-label">Upload PDF File:</label>
+                <input type="file" name="pdf_file" id="pdf_file">
+                <input type="submit" value="Upload" id="send-btn">
+                <input type="hidden" id="user-message" />
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

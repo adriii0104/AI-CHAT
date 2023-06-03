@@ -1,0 +1,16 @@
+{% extends 'plantillas/plantilla-chat.html' %}
+
+{% block chat %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/pdfreader.css') }}">
+</head>
+<body>
+    <div class="pdf-content">
+        <h1>PDF Content</h1>
+        <div class="text-container">
+            <p>{{ text }}</p>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

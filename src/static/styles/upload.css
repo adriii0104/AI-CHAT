@@ -1,0 +1,146 @@
+/* styles.css */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url(../IMGS/hero-iconizer_x1_old.jpg) no-repeat;
+    background-position: center center;
+    background-size: 50%;
+
+}
+
+
+#chat-window {
+    margin-top: auto;
+    margin-bottom: 120px;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    display: flex;
+    flex-direction: column-reverse; /* Cambio en la dirección de la columna */
+}
+
+
+.chat-container {
+    flex-grow: 1;
+    padding: 15px 275px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    border-radius: 5px;
+    font-family: "Poppins", sans-serif;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#send-btn {
+    margin-left: 123px;
+    margin-bottom: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85em;
+    padding: 5px 35px;
+    border-radius: 5pt;
+    background-color: black;
+    color: white;
+}
+#send-btn:hover {
+    color: rgb(231, 231, 231);
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    font-family: "Poppins", sans-serif;
+}
+
+.user-message {
+    background-color: #fafafa;
+    height: 15px auto;
+    list-style: none;
+}
+
+.bot-message {
+    background-color: transparent;
+    height: 75px auto !important;
+    list-style: none;
+    border-top: 1px;
+    border-bottom-width: 1px;
+    border-color: rgba(0,0,0,.1);
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    font-family: 'Hind Madurai', sans-serif;
+}
+
+.voice-message {
+    background-color: #fff4e2;
+}
+
+.message-content {
+    margin: 0;
+}
+#audio-btn{
+    background: transparent;
+    border: none;
+    font-size: 1.95em;
+}
+#audio-btn:hover {
+    color: rgb(17, 98, 112);
+}
+.href{
+    position: absolute;
+    top: 70%;
+    left: 70%;
+    transform: translate(-50%, -50%) !important;
+    color: rgb(47, 49, 49);
+    text-decoration: none;
+    font-size: 1.65em;
+    border-bottom: 2px solid black;
+}
+#user-input i{
+    vertical-align: middle;
+    margin-left: 25px;
+}
+#reader{
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 75%;
+    height: 45%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)!important;
+    font-size: 23px;
+    color: rgba(0, 0, 0, 0.616);
+}
+#reader ol{
+    font-size: 17px;
+    font-weight: lighter;
+    color: rgb(0, 0, 0);
+}
+#reader h2{
+    margin-top: -40%;
+    margin-left: 02%;
+    position: absolute;
+    color: black;
+}
+#reader h6{
+    position: absolute;
+    margin-left: -80%;
+    color: black;
+}
+#reader select{
+    position: absolute;
+    top: 90%;
+    width: 25%;
+    height: 7%;
+    background-color: transparent;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

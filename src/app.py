@@ -13,6 +13,7 @@ import speech_recognition as sr
 from apis import error
 from utils.verificacion import enviar_correo
 from datetime import datetime, timedelta
+from PyPDF2 import PdfReader
 
 
 app = Flask(__name__)
@@ -265,7 +266,10 @@ def login():
 
 
 
-from flask import request, redirect, url_for
+
+
+
+
 
 @app.route('/auth/verificacion', methods=["GET", "POST"])
 def verificacion():
@@ -363,6 +367,27 @@ def index():
 @app.route('/home')
 def home():
     return render_template('index.html')
+
+
+@app.route('/read/pdf', methods=['GET', 'POST'])
+def read_pdf():
+    if request.method == 'POST':
+        pdf = request.files['pdf_file']
+        # Guarda el archivo PDF en el servidor
+        pdf.save("uploaded.pdf")
+        
+        reader = PdfReader("uploaded.pdf")
+        number_of_pages = len(reader.pages)
+        page = reader.pages[0]
+        text = page.extract_text()
+        
+        return render_template('read.html', text=text)
+    
+    return render_template('upload.html')
+
+
+
+
 
 
 

@@ -31,6 +31,7 @@
 
     <div id="text-indication">
       <p class="log">Or log with Mail</p>
+      <p id="error"></p>
     </div>
 
     <form method="post">
@@ -39,12 +40,24 @@
       </div>
       
       <div class="user-box">
-        <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" autocomplete="on" required>
+        <input type="password" id="contraseña" name="contraseña" placeholder="Password" autocomplete="on" oninput="validate()" required>
         <span class="password-toggle" onclick="togglePasswordVisibility()"><i class="fi fi-sr-eye"></i></span>
       </div>
       <br>
+
       {% if error %}
-      <div id="error">{{ error }}</div>
+      <script>
+        window.onload = function (){
+          document.getElementById("email").focus();
+          var error = '{{ error}}'
+          if (error) {
+                  document.getElementById("email").style.border = "1px solid red";
+                  document.getElementById("contraseña").style.border = "1px solid red";
+                  document.getElementById("error").innerHTML = "Email or password not found";
+                  document.getElementById("error").style.color = "red";
+                  document.getElementById("error").style.fontSize = "19px";
+        }}
+      </script>
       {% endif %}
 
       <a href="{{ url_for ('register') }}">
@@ -52,7 +65,7 @@
       </a>
 
 
-      <button class="i-button-register" id="button">Log In</button><br><br><br><br><br>
+      <button class="i-button-register" id="button" disabled="true">Log In</button><br><br><br><br><br>
     </form>
   </div>
 </div>
