@@ -1,4 +1,8 @@
 /* styles.css */
+
+*{
+    letter-spacing: 0.07em;
+}
 body {
     font-family: "Poppins", sans-serif;
     margin: 0;

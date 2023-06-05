@@ -3,8 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def enviar_correo(destinatario, asunto, contenido):
-    remitente = 'ctgenuine@outlook.com'
-    clave = 'Joselopez12@'
+    remitente = 'adriii0104@hotmail.com'
+    clave = 'Acd20803@'
 
     mensaje = MIMEMultipart()
     mensaje['From'] = remitente

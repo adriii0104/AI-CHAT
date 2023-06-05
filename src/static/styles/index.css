@@ -3,12 +3,14 @@
     padding: 0;
     box-sizing: border-box;
     font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing: 0.07em;
+    color: white !important;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: url(../IMGS/hero-iconizer_x1_old.jpg) no-repeat;
+    background-color: rgba(0, 0, 0, 0.93);
     background-position: center center;
     background-size: 50%;
 }
@@ -16,7 +18,7 @@ body {
     position: absolute;
     text-align: center;
     top: 40%;
-    left: 45%;
+    left: 44.5%;
     transform: translate(-50%, -50%);
 }
 #principal h4{
@@ -38,17 +40,94 @@ body {
     background: rgb(22, 22, 22);
     cursor: pointer;
 }
-#txt p{
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    font-size: 1.25em;
+#txt {
+    background-color: #1d1d1d !important;
+    width: 50% !important;
+    height:25% !important;
     position: absolute;
-    top: 70%;
+    top: 80%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #636363;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    border-radius: 7pt;
+}
+#txt p{
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size: 1.05em;
+    color: #d6d6d6 !important;
+    text-align: center;
     font-weight: lighter;
     text-align: center;
-
-
-
+    font-weight: 500;
 }
+#txt p{
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: .15em solid #333;
+    font-size: 21px;
+    animation: typing 3s steps(40) infinite, reset-animation 40s infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes reset-animation {
+    0%, 100% { width: 0; }
+    50% { width: 100%; }
+}
+
+#search{
+    position: absolute;
+    top: 13%;
+    left: 15%;
+    transform: translate(-50%, -50);
+}
+#search label {
+    top: 0;
+    left: 0;
+    position: absolute;
+    padding: 13px 15px;
+    font-size: 0.65em;
+    color: rgb(255, 255, 255);
+    pointer-events: none;
+    margin-left: -3px;
+    transition: all .4s ease-in-out;
+}
+#search input{
+    padding: 11px 15px;
+    border-radius: 15px;
+    border: none;
+    background: rgb(32, 32, 32);
+    font-weight: 600;
+}
+#search input:focus~label,
+#search input:valid~label{
+    margin-top: -35px;
+}
+#search span{
+    color: rgb(161, 161, 161) !important;
+    margin-left: 10px;
+}
+.spinner {
+    display: none; /* Ocultar el spinner inicialmente */
+    width: 20px;
+    height: 20px;
+    border: 3px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

@@ -4,7 +4,7 @@ import string
 import nltk
 import spacy
 import pyttsx3
-from flask import Flask, render_template, request, url_for, redirect, session,flash
+from flask import Flask, render_template, request, url_for, redirect, session, flash, send_file, send_from_directory
 import openai
 from sklearn.feature_extraction.text import CountVectorizer
 from flask_mysqldb import MySQL
@@ -13,7 +13,10 @@ import speech_recognition as sr
 from apis import error
 from utils.verificacion import enviar_correo
 from datetime import datetime, timedelta
-from PyPDF2 import PdfReader
+from PyPDF2 import PdfReader, PdfWriter
+from utils.extraccion import correos
+from docx import Document
+import os
 
 
 app = Flask(__name__)
@@ -104,7 +107,7 @@ def obtener_respuesta_gpt3(pregunta, conversaciones):
         respuesta = openai.Completion.create(
             engine='text-davinci-003',
             prompt=parte_entrada,
-            max_tokens=100,
+            max_tokens=1500,
             n=1,
             stop=None,
             temperature=0.7
@@ -156,7 +159,104 @@ def convertir_texto_a_voz(texto):
     engine.save_to_file(texto, 'respuesta.wav')
     engine.runAndWait()
 
+
+
+
+
+@app.route('/work/pdf', methods=['POST'])
+def work_pdf():
+    # Obtener el contenido de la solicitud
+    content = request.form['content']
+
+    # Crear un nuevo archivo PDF
+    pdf = PdfWriter()
+    pdf.add_page()
+    pdf.add_text(10, 10, content)
+
+    # Guardar el archivo PDF en un archivo temporal
+    temp_file = 'c:\\Users\\El bobul\\Desktop\\IA\\temp.docx'
+    with open(temp_file, 'wb') as file:
+        pdf.write(file)
+
+    # Generar el enlace de descarga
+    download_link = url_for('download_file', filename=temp_file)
+
+    # Redirigir al cliente a la ruta de descarga
+    print(download_link)
+
+
+
+
+
+
+@app.route('/work/word', methods=['POST'])
+def work_word():
+    print("Antes de crear el documento Word")
+    # Obtener el contenido de la solicitud
+    content = request.form.get('content')
+    print(content)
+
+    # Crear un nuevo documento Word
+    doc = Document()
+    doc.add_paragraph(content)
+
+    # Guardar el documento en un archivo temporal
+    temp_file = 'c:\\Users\\El bobul\\Desktop\\IA\\temp.docx'
+    doc.save(temp_file)
+    
+    print("Después de crear el documento Word")
+
+    return send_file()
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/download', methods=['GET'])
+def download_file():
+    # Obtener el nombre del archivo a descargar
+    filename = request.args.get('filename')
+
+    # Devolver el archivo como respuesta
+    return send_file(filename, as_attachment=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Estos son los corredores, ej. login, register, chat, etc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -431,19 +531,31 @@ def speech_to_text():
 @app.route('/get_response', methods=['POST'])
 def get_response():
     mensaje = request.form['user_message']
-    conversaciones = cargar_conversaciones()
-    response = obtener_respuesta_gpt3(mensaje, conversaciones)
 
-    # Realizar aprendizaje activo
-    aprendizaje_activo(mensaje, response, conversaciones)
+    if mensaje.startswith('word:'):
+        # Solicitar un trabajo en Word
+        content = mensaje[5:].strip()
+        return redirect(url_for('work_word', content=content))
+    elif mensaje.startswith('pdf:'):
+        # Solicitar un trabajo en PDF
+        content = mensaje[4:].strip()
+        return redirect(url_for('work_pdf', content=content))
+    else:
+        # Obtener respuesta del modelo GPT-3
+        conversaciones = cargar_conversaciones()
+        response = obtener_respuesta_gpt3(mensaje, conversaciones)
 
-    # Guardar conversaciones actualizadas
-    guardar_conversaciones(conversaciones)
+        # Realizar aprendizaje activo
+        aprendizaje_activo(mensaje, response, conversaciones)
 
-    # Convertir la respuesta de texto a voz
-    convertir_texto_a_voz(response)
+        # Guardar conversaciones actualizadas
+        guardar_conversaciones(conversaciones)
 
-    return response
+        # Convertir la respuesta de texto a voz
+        convertir_texto_a_voz(response)
+
+        return response
+
 
 if __name__ == '__main__':
     crear_archivos()

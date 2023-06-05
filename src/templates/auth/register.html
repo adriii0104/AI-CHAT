@@ -1,4 +1,4 @@
-{% extends './plantillas/base.html' %}
+{% extends './plantillas/plantillas-auth.html' %}
 
 {% block href %} Login {% endblock %}
 
@@ -9,6 +9,10 @@
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
 </head>
+
+<div class="spinner">
+  <div class="spinner-circle"></div>
+</div>
 
 <div class="content">
   <div class="log-in-card">
@@ -35,18 +39,22 @@
 
     <form method="post" onsubmit="return check()">
       <div class="user-box">
-        <input type="text" id="nombre" oninput="validate()" name="nombre" placeholder="Nombre" autocomplete="on" required>
-      </div>
+        <input type="text" id="nombre" oninput="validate()" name="nombre"  autocomplete="on" required>
+        <label>Name and Last Name</label>
+      </div><br>
       <div class="user-box">
-        <input type="text" id="email" oninput="validate()" name="email" placeholder="Email" autocomplete="on" required>
+        <input type="text" id="email" oninput="validate()" name="email" autocomplete="on" required>
+        <label>Email</label>
 
 
-      </div>
+      </div><br>
       <div class="user-box">
-        <input type="password" id="contraseña" oninput="validate()" name="contraseña" placeholder="Contraseña" autocomplete="on" required>
-      </div>
+        <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="on" required>
+        <label>Password</label>
+      </div><br>
       <div class="user-box">
-        <input type="password" id="ccontraseña" oninput="validate()" placeholder="Confirmar contraseña" autocomplete="on" required>
+        <input type="password" id="ccontraseña" oninput="validate()" autocomplete="on" required>
+        <label>Confirm password</label>
       </div>
       <br>
 
@@ -64,6 +72,7 @@
         <p id="errorregister" class="error"></p>
       </div><br>
       <button class="i-button-register" id="button" disabled="true">Register</button><br><br>
+      <div id="spinnerContainer"></div>
     </form>
   </div>
 </div>

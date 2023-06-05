@@ -18,15 +18,58 @@
         }
     </style>
 </head>
+<div class="spinner">
+    <div class="spinner-circle"></div>
+</div>
+<div id="search" >
+    <input type="search" required>
+    <label><i class='fi fi-rr-search'></i> <span> Documentacion</span></label>
+</div>
+
 <div id="principal">
     <h4>Genuine Chat</h4>
     <p>Welcome to the best AI Chat</p><br><br>
-    <a href="{{ url_for('register') }}">
-    <button>Empezar</button></a>
+        <button id="button">Start</button>
 </div>
 <div id="txt">
-<p>
-    ¡Prepárate para el futuro con Genuine, el chatbot que está un paso adelante! Descubre una nueva dimensión de conocimiento, precisión y capacidad de procesamiento. No pierdas más tiempo, únete a la revolución de la IA y déjate sorprender por Genuine.
-</p>
+    <p id="texto">
+        ¡The future is already near, why don't you start living it?! <i class="fi fi-ss-user-robot"></i>.
+    </p>
 </div>
+
+<script>
+    // Espera a que se cargue el contenido de la página antes de ejecutar el código
+    document.addEventListener("DOMContentLoaded", function(event) {
+        // Obtén el elemento del texto
+        var textElement = document.getElementById("txt");
+
+        // Calcula la duración de la animación basándote en el número de caracteres del texto
+        var textLength = textElement.textContent.length;
+        var typingDuration = textLength * 50; // Duración de la animación de escritura
+
+        // Establece la duración de la animación en el estilo CSS
+        textElement.style.animationDuration = typingDuration + "ms";
+    });
+
+    document.getElementById('button').addEventListener('click', function() {
+  // Mostrar el spinner y retrasar la carga de la página durante 2 segundos
+  showSpinner(this);
+  setTimeout(function() {
+    window.location.href = "/auth/register"; 
+  }, 2000);
+});
+
+function showSpinner(button) {
+  // Crear el elemento del spinner
+  var spinner = document.createElement('span');
+  spinner.classList.add('spinner');
+
+  // Reemplazar el contenido del botón con el spinner
+  button.innerHTML = '';
+  button.appendChild(spinner);
+
+  // Mostrar el spinner cambiando el valor de display
+  spinner.style.display = 'inline-block';
+}
+</script>
 {% endblock %}

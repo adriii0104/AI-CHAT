@@ -5,7 +5,6 @@ from flask import session
 
 
 def correos():
-    id = session.get('idblid')
 
     conexion = mysql.connector.connect(
         host="localhost",
@@ -15,9 +14,8 @@ def correos():
     )
 
     cur = conexion.cursor()
-    cur.execute("SELECT * FROM verificacion WHERE idblid = (%s,)",
-                (id, ))
-    codigo_verificacion = cur.fetchone()
+    cur.execute("SELECT usuario FROM usuarios")
+    emails = cur.fetchall()
     cur.close()
 
-    return codigo_verificacion[2]
+    print(emails)
