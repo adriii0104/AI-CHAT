@@ -2,7 +2,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing: 0.07em;
+    
 }
 
 
@@ -15,7 +17,7 @@ header{
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px 100px;
+    padding: 50px 100px;
     display: flex;
     align-items: center;
     margin-right: 10px;
@@ -31,6 +33,7 @@ a{
     font-weight: 500;
     font-size: 0.9em;
 }
+
 .navigation i{
     font-size: 1.2em;
     vertical-align: middle;
@@ -42,8 +45,26 @@ a{
 
 
 .navigation {
-    margin-left: 40px; /* Ajusta el margen derecho según tus preferencias */
+    margin-left: 40px;
 }
 .navigation a{
     margin-left: 40px;
+}
+
+.navigation a:nth-child(5){
+    margin-left: 545px;
+    background-color: rgb(0, 0, 0);
+    padding: 15px 25px;
+    border-radius: 5pt;
+}
+.navigation a:nth-child(6){
+    background-color: rgb(0, 0, 0);
+    padding: 15px 25px;
+    border-radius: 5pt;
+}
+.navigation a:nth-child(5):hover{
+    background-color: rgb(39, 39, 39);
+}
+.navigation a:nth-child(6):hover{
+    background-color: rgb(39, 39, 39);
 }
