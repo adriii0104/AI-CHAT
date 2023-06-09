@@ -4,7 +4,7 @@
 
 {% block body %}
 <head>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth_login.css') }}">
   <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
@@ -31,22 +31,33 @@
       <i class="fi fi-brands-facebook"></i>
       <i class="fi fi-brands-github"></i>
       <i class="fi fi-brands-microsoft"></i>
-    </div><br><br><br><br><br>
+    </div><br><br><br><br>
 
     <div id="text-indication">
       <p class="log">Or log with Mail</p>
-      <p id="error"></p>
+      <ul class="flash-messages">
+      {% with messages = get_flashed_messages() %}
+  {% if messages %}
+
+      {% for message in messages %}
+        <li style="position: absolute; width: 100%; font-size: 0.85em;">{{ message }}</li>
+      {% endfor %}
+
+  {% endif %}
+{% endwith %}
+<li style="position: absolute; width: 100%; font-size: 0.85em;" id="error"></li>
+</ul>
     </div><br>
 
     <form method="post">
       <div class="user-box">
         <input type="text" id="email" oninput="validate()" name="email" autocomplete="on" required>
-        <label>Ingresa tu Email</label>
+        <label>Email</label>
       </div><br>
       
       <div class="user-box">
         <input type="password" id="contraseña" name="contraseña" autocomplete="on" oninput="validate()" required>
-        <label>Ingresa tu contraseña</label>
+        <label>Password</label>
         <span class="password-toggle" onclick="togglePasswordVisibility()"><i class="fi fi-sr-eye"></i></span>
       </div>
       <br>
@@ -60,12 +71,9 @@
                   document.getElementById("email").style.border = "1px solid red";
                   document.getElementById("contraseña").style.border = "1px solid red";
                   document.getElementById("error").innerHTML = "Email or password not found";
-                  document.getElementById("error").style.color = "red";
-                  document.getElementById("error").style.fontSize = "19px";
         }}
       </script>
       {% endif %}
-
       <a href="{{ url_for ('register') }}">
       <p class="redirect">¿Don't have an account?</p>
       </a>

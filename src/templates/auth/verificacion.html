@@ -36,13 +36,32 @@
 
     <form method="post" >
       <div class="user-box">
-        <input id="codigo" oninput="validate()" name="codigo" placeholder="Código" autocomplete="on" required><br><br><br>
+        <input id="codigo" oninput="validate()" name="codigo" placeholder="Código" autocomplete="on" required>
+        <label >Te hemos enviado un código de verificación</label>
+        <br><br><br>
       </div>
-      <button class="i-button-register" id="button" >Verificate</button><br><br><br><br><br>
+      <button class="i-button-register" id="button" disabled >Verificate</button><br><br><br><br><br>
     </form>
-  </div>
+  </div><br><br><br>
+  <p style="font-size: 0.65em; color: rgba(150, 150, 150, 0.603);">Identidicador: {{ session['idgenuine' ]}}</p>
 </div>
 </section>
+<script>
+function validate() {
+  let codigo = document.getElementById("codigo").value;
+  var button = document.getElementById("button");
+
+
+  const isFormValid = codigo.length > 3;
+
+  button.disabled = !isFormValid;
+  button.style.color = isFormValid ? "black" : "#969696b0";
+  button.style.backgroundColor = isFormValid ? "white" : "#96969631";
+  button.style.cursor = isFormValid ? "pointer" : "default";
+  console.log(isFormValid ? "button enabled" : "button disabled");
+  
+}  
+</script>
 
 </body>
 {% endblock %}

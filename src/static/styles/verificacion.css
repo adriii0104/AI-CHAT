@@ -3,25 +3,25 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'SF Pro Display', sans-serif;
-    letter-spacing: 0.07em;
+    color: white;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.459), rgba(0, 0, 0, 0.452)), url(../IMGS/hero-iconizer_x1_old.jpg) no-repeat;
     background-position: center center;
     background-size: 80%;
+    background-color: rgba(0, 0, 0, 0.93);
 }
 
 .content {
     position: fixed;
-    top: 50%;
+    top: 54%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 670px;
-    background: #ffff;
-    height: 520px;
+    width: 580px;
+    background: #242424;
+    height: 600px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,21 +37,15 @@ body {
 
 .user-box input {
     width: 100%;
-    height: 42px;
+    height: 62px;
     border-radius: 3pt;
-    border: 1px solid #7979794f;
-    margin-top: 20px;
+    border: 0.5px solid #7979794f;
+    padding-bottom: -10px;
+    padding-left: 7px;
+    cursor: auto;
+    letter-spacing: 0.16em;
+    background: transparent;
 }
-
-.user-box input::placeholder {
-    color: #7979798a;
-    font-family: 'SF Pro Display', sans-serif;
-    font-size: 1.05em;
-    margin-left: 2% !important;
-    margin-top: 1.4%;
-    position: absolute;
-}
-
 .content .user-box {
     width: 120%;
 }
@@ -65,22 +59,56 @@ body {
     border-radius: 3pt;
     font-size: 0.9em;
 }
-
-.user-box input:focus {
-    outline: none;
-    border: 1px solid #000;
-    margin-left: 0.4%;
-    transition: .2s;
-    -webkit-transition:.2s;
-    -moz-transition:.2s;
+.user-box{
+    position: relative;
 }
+.user-box label{
+    letter-spacing: 0.16em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    padding: 25px 7px;
+    transition: all .3s;
+    letter-spacing: 0.07em;
+    font-size: 0.65em;
+    color: rgba(255, 255, 255, 0.69);
+    font-weight: lighter;
+    letter-spacing: 0.15em;
+}
+.user-box input:focus~label,
+.user-box input:valid~label{
+    top: -22px;
+    font-size: 0.65em;
+}
+.user-box input:focus::placeholder,
+.user-box input:valid::placeholder{
+    display: block;
+    color: rgba(255, 255, 255, 0.69);
+    font-weight: lighter;
+
+}
+.user-box input::placeholder{
+    color: transparent;
+}
+.user-box input:focus{
+outline: none;
+}
+.password-toggle {
+    position: absolute;
+    top: 55%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 
 .content .close {
     color: white !important;
-    margin-left: 132%;
-    margin-top: -19.2%;
-    border-right: 42pt;
-    font-size: 2.1em;
+    margin-left: 115.4%;
+    margin-top: -17.9%;
+    font-size: 2.5em;
     text-align: center;
     width: 50px;
     height: 40px;
@@ -105,7 +133,7 @@ body {
 }
 
 .terms-and-conditions span {
-    border-bottom: 1px solid #2c2c2cb0;
+    border-bottom: 1px solid #cacacab0;
 }
 .terms-and-conditions{
     font-size: 0.9em !important;
@@ -142,3 +170,22 @@ body {
     text-align: center;
     margin-top: 20px;
 }
+.spinner {
+    display: none; /* Ocultar el spinner inicialmente */
+    width: 20px;
+    height: 20px;
+    border: 3px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

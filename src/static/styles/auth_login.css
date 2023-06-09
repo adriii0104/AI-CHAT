@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'SF Pro Display', sans-serif;
+    color: white;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-position: center center;
+    background-size: 80%;
+    background-color: rgba(0, 0, 0, 0.93);
+}
+
+.content {
+    position: fixed;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 670px;
+    background: #242424;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 4pt;
+}
+
+#altern-log i {
+    margin-right: 30px;
+    padding: 10px 12px;
+    border-radius: 4pt;
+    background-color: #96969631;
+}
+
+.user-box input {
+    width: 100%;
+    height: 62px;
+    border-radius: 3pt;
+    border: 0.5px solid #7979794f;
+    padding-bottom: -10px;
+    padding-left: 7px;
+    cursor: auto;
+    letter-spacing: 0.16em;
+    background: transparent;
+}
+.content .user-box {
+    width: 120%;
+}
+
+.content button {
+    width: 120%;
+    height: 45px;
+    color: rgba(150, 150, 150, 0.69);
+    background-color: rgba(150, 150, 150, 0.192);
+    border-color: #0000;
+    border-radius: 3pt;
+    font-size: 0.9em;
+}
+.user-box{
+    position: relative;
+}
+.user-box label{
+    letter-spacing: 0.16em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    padding: 25px 7px;
+    transition: all .3s;
+    letter-spacing: 0.07em;
+    font-size: 0.65em;
+    color: rgba(255, 255, 255, 0.69);
+    font-weight: lighter;
+    letter-spacing: 0.15em;
+}
+.user-box input:focus~label,
+.user-box input:valid~label{
+    top: -22px;
+    font-size: 0.65em;
+}
+.user-box input:focus::placeholder,
+.user-box input:valid::placeholder{
+    display: block;
+    color: rgba(255, 255, 255, 0.69);
+    font-weight: lighter;
+
+}
+.user-box input::placeholder{
+    color: transparent;
+}
+.user-box input:focus{
+outline: none;
+}
+.password-toggle {
+    position: absolute;
+    top: 55%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+.content .close {
+    color: white !important;
+    margin-left: 135%;
+    margin-top: -19.9%;
+    font-size: 2.5em;
+    text-align: center;
+    width: 50px;
+    height: 40px;
+    border-radius: 155px;
+
+}
+
+.content p {
+    font-weight: 700;
+    font-size: 1.70em;
+}
+
+.log-in-card {
+    margin-top: 70px;
+    margin-left: -50px;
+
+}
+
+.terms-and-conditions .field {
+    color: #2c2c2cb0;
+    font-weight: lighter;
+}
+
+.terms-and-conditions span {
+    border-bottom: 1px solid #cacacab0;
+}
+.terms-and-conditions{
+    font-size: 0.9em !important;
+}
+#text-indication .log{
+    border-bottom: 1px solid #80808052;
+    margin-bottom: 20px;
+    font-size: 0.95em !important;
+
+}
+.redirect{
+    font-size: 0.95em !important;
+    font-weight: lighter !important;
+    cursor: pointer;
+    margin-bottom: 18px;
+
+}
+#altern-log p{
+    font-size: 0.95em;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+.footer{
+    font-size: 0.75em !important;
+    text-align: center;
+    font-weight: lighter !important;
+}
+.error{
+    font-size: 0.95em;
+}
+.error-email{
+    font-size: 0.95em !important;
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}
+.spinner {
+    display: none; /* Ocultar el spinner inicialmente */
+    width: 20px;
+    height: 20px;
+    border: 3px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

@@ -4,7 +4,7 @@
 
 {% block body %}
 <head>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth_register.css') }}">
   <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
@@ -39,22 +39,26 @@
 
     <form method="post" onsubmit="return check()">
       <div class="user-box">
-        <input type="text" id="nombre" oninput="validate()" name="nombre"  autocomplete="on" required>
+        <input type="text" id="nombre" oninput="validate()" name="nombre"  placeholder="Jane Doe" autocomplete="off" required>
         <label>Name and Last Name</label>
       </div><br>
       <div class="user-box">
-        <input type="text" id="email" oninput="validate()" name="email" autocomplete="on" required>
+        <input type="text" id="email" oninput="validate()" name="email" placeholder="janedoe@genuine.com" autocomplete="off" required>
         <label>Email</label>
 
 
       </div><br>
       <div class="user-box">
-        <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="on" required>
+        <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="off" required>
         <label>Password</label>
       </div><br>
       <div class="user-box">
-        <input type="password" id="ccontraseña" oninput="validate()" autocomplete="on" required>
+        <input type="password" id="ccontraseña" oninput="validate()" autocomplete="off" required>
         <label>Confirm password</label>
+      </div><br>
+      <div class="user-box">
+        <input type="password"  name="openai" oninput="validate()" placeholder="XXX-XXX-XXX-XXX" autocomplete="off" required>
+        <label>Api OpenAi</label>
       </div>
       <br>
 
