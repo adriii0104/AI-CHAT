@@ -32,7 +32,7 @@ app.config['SECRET_KEY'] = SECRET
 mysql = MySQL(app)
 
 # Configurar la clave de la API de OpenAI
-openai.api_key = mi_api
+
 
 # Cargar modelo de SpaCy en español
 nlp = spacy.load('es_core_news_sm')
@@ -116,47 +116,40 @@ def guardar_conversaciones(email_usuario, conversaciones):
 
 
 # Obtener respuesta utilizando la API de OpenAI
-def obtener_respuesta_gpt3(pregunta, conversaciones):
+def obtener_respuesta_gpt3(pregunta, conversaciones, key):
     if 'usuario' in session:
+        openai.api_key = key
         contexto = cargar_contexto()
         contexto['pregunta'] = pregunta
         guardar_contexto(contexto)
         
-
-
         conversaciones_list = [(key, value) for key, value in conversaciones.items()]
         conversacion_actual = conversaciones_list + [(pregunta, '')]
         entrada = '\n'.join(f'Usuario: {user}\nBot: {bot}' for user, bot in conversacion_actual)
         tokens_entrada = nltk.word_tokenize(entrada)
-
-        # Dividir la entrada en partes más pequeñas para reducir los gastos de tokens
-        partes_entrada = []
-        inicio = 0
-        while inicio < len(tokens_entrada):
-                fin = min(inicio + 4096, len(tokens_entrada))
-                partes_entrada.append(' '.join(tokens_entrada[inicio:fin]))
-                inicio = fin
-
-        # Obtener respuestas para cada parte de la entrada
-        respuestas = []
-    for parte_entrada in partes_entrada:
+        
+        # Eliminar líneas que comienzan con "Usuario:" y "Bot:"
+        codigo_limpio = [linea for linea in tokens_entrada if not linea.startswith(('Usuario:', 'Bot:'))]
+        
+        # Unir las líneas de código en un solo bloque de texto
+        codigo_completo = '\n'.join(codigo_limpio)
+        
+        # Obtener la respuesta del modelo
         respuesta = openai.Completion.create(
             engine='text-davinci-003',
-            prompt=parte_entrada,
+            prompt=codigo_completo,
             max_tokens=1500,
             n=1,
             stop=None,
             temperature=0.7
         )
+        
         nueva_respuesta = respuesta.choices[0].text.strip()
-        respuestas.append(nueva_respuesta)
-
-    # Combinar todas las respuestas
-    nueva_respuesta = ' '.join(respuestas)
-    # Agregar la nueva respuesta al cerebro de conversaciones sin consumir todos los tokens
-
-
-    return nueva_respuesta
+        
+        # Agregar la nueva respuesta al cerebro de conversaciones sin consumir todos los tokens
+        conversaciones[str(uuid.uuid4())] = nueva_respuesta
+        
+        return nueva_respuesta
 
 
 
@@ -205,7 +198,6 @@ def work_word():
     print("Antes de crear el documento Word")
     # Obtener el contenido de la solicitud
     content = request.form.get('content')
-    print(content)
 
     # Crear un nuevo documento Word
     doc = Document()
@@ -255,59 +247,92 @@ def before_request():
 
 
 
-
-
-
-
-
-
-
-# Registro
 @app.route('/auth/register', methods=["POST", "GET"])
 def register():
     if request.method == "POST":
-            id_usuario = str(uuid.uuid4())
-            nombre = request.form.get('nombre')
-            email = request.form.get('email')
-            password = request.form.get('contraseña')
-            hashpassword = hashlib.sha256()
-            hashpassword.update(password.encode('utf8'))
-            hash_value = hashpassword.hexdigest()
-            Hashapi = request.form.get('openai')
-            code = 0
-            reason = "NO"
-            numeros = ''.join(random.choices(string.digits, k=4))
+        id_usuario = str(uuid.uuid4())
+        nombre = request.form.get('nombre')
+        email = request.form.get('email')
+        password = request.form.get('contraseña')
+        hashpassword = hashlib.sha256()
+        hashpassword.update(password.encode('utf8'))
+        hash_value = hashpassword.hexdigest()
+        api = request.form.get('openai')
+        code = 0
+        reason = "NO"
+        numeros = ''.join(random.choices(string.digits, k=4))
+        cur1 = mysql.connection.cursor()
+        cur1.execute("SELECT usuario from usuarios Where usuario = %s", (email,))
+        user = cur1.fetchone()
+        
+        # Verificar la API ingresada
+        try:
+            openai.ChatCompletion.create(
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": "Who won the world series in 2020?"},
+                    {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+                    {"role": "user", "content": "Where was it played?"}
+                ],
+                model="gpt-3.5-turbo",
+                api_key=api
+            )
+        except openai.error.AuthenticationError:
+            return render_template('auth/register.html', error="La API ingresada es incorrecta")
+        except Exception as e:
+            return render_template('auth/register.html', error="Error al verificar la API: " + str(e))
+        
+        if user is None:
             cur1 = mysql.connection.cursor()
-            cur1.execute("SELECT usuario from usuarios Where usuario = %s", (email, ))
-            user = cur1.fetchone()
-            if user is None:
-
-                cur1 = mysql.connection.cursor()
-                cur1.execute("INSERT INTO verificacion VALUES (%s, %s, %s, %s)",
-                             (id_usuario, reason, numeros, datetime.now()))
-                
-                cur1.close()
-
-                cur = mysql.connection.cursor()
-                cur.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s)",
-                             (code, id_usuario, nombre, email, hash_value, Hashapi))
-                
-                mysql.connection.commit()
-
-                flash("Felicidades, ya casi eres parte de Genuine. Inicia Sesión por seguridad.")
-                return redirect(url_for('login'))
-            else:
-                return render_template('auth/register.html', error=error)
+            cur1.execute("INSERT INTO verificacion VALUES (%s, %s, %s, %s)",
+                         (id_usuario, reason, numeros, datetime.now()))
+            cur1.close()
+    
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s)",
+                         (code, id_usuario, nombre, email, hash_value, api))
+            mysql.connection.commit()
+    
+            flash("Felicidades, ya casi eres parte de Genuine. Inicia Sesión por seguridad.")
+            return redirect(url_for('login'))
+        else:
+            return render_template('auth/register.html', error="El usuario ya existe")
     else:
         return render_template('auth/register.html')
 
 
+# Diccionario para almacenar los intentos de inicio de sesión fallidos por IP
+failed_login_attempts = {}
 
-# Login
-# Login
+# Diccionario para almacenar las IP bloqueadas y el tiempo en que deben ser desbloqueadas
+blocked_ips = {}
+
+# Duración del bloqueo en minutos
+bloqueo_duracion_minutos = 30
+
+# Función para verificar si una IP debe ser bloqueada
+def check_block_ip(ip):
+    if ip in blocked_ips:
+        tiempo_desbloqueo = blocked_ips[ip]
+        if datetime.now() < tiempo_desbloqueo:
+            return True
+        else:
+            del blocked_ips[ip]
+    elif ip in failed_login_attempts and failed_login_attempts[ip] >= 4:
+        tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
+        blocked_ips[ip] = tiempo_desbloqueo
+        del failed_login_attempts[ip]
+        return True
+    return False
+
 @app.route('/auth', methods=["POST", "GET"])
 def login():
     if request.method == 'POST':
+        ip = request.remote_addr  # Obtener la IP del cliente
+        if check_block_ip(ip):
+            flash("Tu IP ha sido bloqueada por demasiados intentos fallidos. Intenta nuevamente más tarde.")
+            return render_template('auth/login.html')
+
         usuario = request.form['email']
         contraseña = request.form['contraseña']
         contraseñahasheada = hashlib.sha256()
@@ -321,11 +346,12 @@ def login():
 
         if user is not None:
             contraseñaalma = user[4]
-            if hash_ingresada == contraseñaalma:  # Comparar el hash ingresado con el hash almacenado
+            if hash_ingresada == contraseñaalma:
                 session['id'] = user[0]
                 session['idgenuine'] = user[1]
                 session['nombre'] = user[2]
                 session['usuario'] = user[3]
+                session['api'] = user[5]  # Set the 'api' key in the session dictionary
                 email_usuario = session['usuario']
                 crear_archivos(email_usuario)
 
@@ -339,10 +365,24 @@ def login():
                     if session['verificado'] == "NO":
                         return redirect(url_for('verificacion'))
                     else:
+                        # Restablecer el contador de intentos de inicio de sesión fallidos para la IP actual
+                        if ip in failed_login_attempts:
+                            del failed_login_attempts[ip]
                         return redirect(url_for('index'))
                 else:
                     return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
             else:
+                # Incrementar el contador de intentos de inicio de sesión fallidos para la IP actual
+                if ip in failed_login_attempts:
+                    failed_login_attempts[ip] += 1
+                else:
+                    failed_login_attempts[ip] = 1
+
+                # Verificar si se alcanzó el límite de intentos fallidos
+                if failed_login_attempts[ip] >= 4:
+                    tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
+                    blocked_ips[ip] = tiempo_desbloqueo
+
                 return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
         else:
             return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
@@ -525,11 +565,12 @@ def speech_to_text():
 
 
 
-# Ruta para las respuestas
 @app.route('/get_response', methods=['POST'])
 def get_response():
     mensaje = request.form['user_message']
     email_usuario = session['idgenuine']
+    key = session['api']
+    print(key)
 
     if mensaje.startswith('word:'):
         # Solicitar un trabajo en Word
@@ -542,13 +583,23 @@ def get_response():
     else:
         # Obtener respuesta del modelo GPT-3
         conversaciones = cargar_conversaciones(email_usuario)
-        response = obtener_respuesta_gpt3(mensaje, conversaciones)
-        guardar_conversaciones(email_usuario, conversaciones)
-        print(conversaciones)
-        return response
+
+        try:
+            response = obtener_respuesta_gpt3(mensaje, conversaciones, key=key)
+            guardar_conversaciones(email_usuario, conversaciones)
+            print(conversaciones)
+            return response
+        except openai.error.AuthenticationError:
+            mensaje_error = 'La API ingresada es incorrecta'
+            return mensaje_error
+        except openai.error.RateLimitError:
+            mensaje_error = 'Se ha agotado el límite de solicitudes de la API. Inténtalo más tarde.'
+            return mensaje_error
+        except Exception as e:
+            mensaje_error = 'Ha ocurrido un error: ' + str(e)
+            return mensaje_error
 
         # Guardar conversaciones actualizadas
-
 
 if __name__ == '__main__':
 

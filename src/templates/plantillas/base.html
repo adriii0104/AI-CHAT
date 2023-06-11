@@ -43,6 +43,7 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
     <title>Chat Genuine</title>
 </head>
+<style id="page-style"></style>
 <body>
     <header>
         <nav class="navigation">
@@ -51,8 +52,31 @@
             <a target="_blank" href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">LinkedIn <i class="fi fi-brands-linkedin"></i></a>
             <a href="">Contacto <i class="fi fi-rs-angle-small-down"></i></a>
             <a href="{{ url_for ('login') }}">Log in</a>
+
+            <div id="night-day">
+            <input type="checkbox" id="mode-switch" class="styled-checkbox" onchange="toggleMode()">
+            <label for="mode-switch">
+                <span class="icon">
+                    <i class="fi fi-tr-cloud-sun"></i>
+                    <i class="fi fi-sr-moon"></i>
+                </span>
+            </label>
+        </div>
         </nav>
     </header>
+    <script>
+        function toggleMode() {
+            var checkbox = document.getElementById("mode-switch");
+            var pageStyle = document.getElementById("page-style");
+
+            if (checkbox.checked) {
+                pageStyle.innerHTML = "body { background-color: white !important; color: black !important; } a { color: black !important} i{ color: black !important} h4{ color: black !important} p{ color: black !important} ";
+            } else {
+                pageStyle.innerHTML = "body { background-color: rgba(0, 0, 0, 0.93) !important ;color: white !important; } a { color: white !important} i{ color: white !important}";
+            }
+        }
+
+    </script>
 </body>
 {% block body %}
 

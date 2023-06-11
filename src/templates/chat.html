@@ -4,6 +4,9 @@
     {% block chat %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
 </head>
 
     <div id="chat-window">
@@ -19,6 +22,7 @@
             </form>
         </div>
     </div>
+    <p style="font-size: 0.65em; font-weight: bold; font-family: 'SF Pro Display', sans-serif; color: rgba(150, 150, 150, 0.603);" class="identificador user-recognititon">Identidicador: {{ session['idgenuine' ]}}</p>
     <script>
         var recognition;
         var isListening = false;

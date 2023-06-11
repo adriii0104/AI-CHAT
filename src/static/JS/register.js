@@ -3,10 +3,11 @@ function validate() {
   let email = document.getElementById("email").value;
   let password = document.getElementById("contraseña").value;
   let confirmPassword = document.getElementById("ccontraseña").value;
+  let api = document.getElementById("api").value;
   var button = document.getElementById("button");
   let emailvalid = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-  const isFormValid = nombre.length >= 7 && email.length >= 7 && password.length >= 7 && confirmPassword.length >= 7 && emailvalid.test(email);
+  const isFormValid = nombre.length >= 4 && email.length >= 7 && password.length >= 7 && confirmPassword.length >= 7 && api.length >= 5 && emailvalid.test(email);
 
   button.disabled = !isFormValid;
   button.style.color = isFormValid ? "black" : "#969696b0";
