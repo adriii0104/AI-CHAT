@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, url_for, redirect, session, f
 import openai
 from sklearn.feature_extraction.text import CountVectorizer
 from flask_mysqldb import MySQL
-from config import mi_api, SECRET
+from config import  SECRET
 import speech_recognition as sr
 from apis import error
 from utils.verificacion import enviar_correo
