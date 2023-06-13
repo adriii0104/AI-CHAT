@@ -315,7 +315,6 @@ def login():
                     session['apellido'] = user[3]
                     session['usuario'] = user[4]
                     session['api'] = user[6]  # Set the 'api' key in the session dictionary
-                    email_usuario = session['usuario']
 
                     cur1 = mysql.connection.cursor()
                     cur1.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session['idgenuine'],))
@@ -382,13 +381,6 @@ def verificacion():
                 mysql.connection.commit()
                 cur.close()
                 session['verificado'] = "SI"
-
-                # Crear el archivo JSON para el usuario
-                email_usuario = session['idgenuine']
-                archivo_usuario = f"{email_usuario}.json"
-                if not os.path.exists(archivo_usuario):
-                    with open(archivo_usuario, 'w') as f:
-                        json.dump({}, f)
 
                 return redirect(url_for('index'))
             else:
