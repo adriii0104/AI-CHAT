@@ -1,4 +1,4 @@
-{% extends './plantillas/plantillas-auth.html' %}
+{% extends './plantillas/base.html' %}
 
 {% block href %} Login {% endblock %}
 
@@ -11,6 +11,15 @@
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+<style>
+  
+  .navigation a:nth-child(6) {
+    display: none;
+    }
+</style>
+
+
+
 <div class="spinner">
   <div class="spinner-circle"></div>
 </div>
@@ -48,6 +57,9 @@
   {% endif %}
 
 {% endwith %}
+{% if errorL %}
+<li style="position: absolute; width: 100%; font-size: 0.85em;">{{ errorL }}</li>
+{% endif %}
 <li style="position: absolute; width: 100%; font-size: 0.85em;" id="error"></li>
 
 
@@ -56,12 +68,12 @@
 
     <form method="post">
       <div class="user-box">
-        <input type="text" id="email" oninput="validate()" name="email" autocomplete="on" required>
+        <input type="text" id="email" oninput="validate()" name="email" autocomplete="new-password" required>
         <label>Email</label>
       </div><br>
       
       <div class="user-box">
-        <input type="password" id="contraseña" name="contraseña" autocomplete="on" oninput="validate()" required>
+        <input type="password" id="contraseña" name="contraseña" autocomplete="new-password" oninput="validate()" required>
         <label>Password</label>
         <span class="password-toggle" onclick="togglePasswordVisibility()"><i class="fi fi-sr-eye"></i></span>
       </div>

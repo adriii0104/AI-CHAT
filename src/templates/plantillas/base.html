@@ -51,7 +51,8 @@
             <a target="_blank" href="https://github.com/adriii0104">GitHub <i class="fi fi-brands-github"></i></a>
             <a target="_blank" href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">LinkedIn <i class="fi fi-brands-linkedin"></i></a>
             <a href="">Contacto <i class="fi fi-rs-angle-small-down"></i></a>
-            <a href="{{ url_for ('login') }}">Log in</a>
+            <a href="">How to view api <i class="fi fi-rs-angle-small-down"></i></a>
+            <a class="loguer" href="{{ url_for ('login') }}">Log in</a>
 
             <div id="night-day">
             <input type="checkbox" id="mode-switch" class="styled-checkbox" onchange="toggleMode()">
@@ -70,7 +71,7 @@
             var pageStyle = document.getElementById("page-style");
 
             if (checkbox.checked) {
-                pageStyle.innerHTML = "body { background-color: white !important; color: black !important; } a { color: black !important} i{ color: black !important} h4{ color: black !important} p{ color: black !important} ";
+                pageStyle.innerHTML = "body { background-color: white !important; color: black !important; } a { color: black !important} i{ color: black !important} h4{ color: black !important} p{ color: black !important} .loguer { color: white !important } .fi{ color: white !important} .fi-brands-github{ color: black !important} .fi-brands-linkedin{ color: black !important} .content{ color: white !important}";
             } else {
                 pageStyle.innerHTML = "body { background-color: rgba(0, 0, 0, 0.93) !important ;color: white !important; } a { color: white !important} i{ color: white !important}";
             }

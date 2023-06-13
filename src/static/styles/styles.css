@@ -8,6 +8,7 @@ body {
     letter-spacing: 0.07em;
     background: rgba(0, 0, 0, 0.93);
     color : #fff ;
+    min-height: 0vh !important;
 
 }
 .user-recognititon{
@@ -35,6 +36,7 @@ body {
     font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     display: flex;
     flex-direction: column-reverse; /* Cambio en la dirección de la columna */
+    box-shadow: 0 0 10px rgba(146, 146, 146, 0.1);
 }
 
 #user-input {

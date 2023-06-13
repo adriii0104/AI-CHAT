@@ -20,14 +20,15 @@ import os
 import traceback
 import hashlib
 import uuid
+from manejoerrores import error100
 
 app = Flask(__name__)
 
 # Almacenaremos la conexión
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'ia'
+app.config['MYSQL_HOST'] = 'database-ia.coiqzeb3mcw7.us-east-2.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'Acd20803'
+app.config['MYSQL_DB'] = 'IA'
 app.config['SECRET_KEY'] = SECRET
 mysql = MySQL(app)
 
@@ -41,25 +42,6 @@ nlp = spacy.load('es_core_news_sm')
 
 # Archivo JSON con información contextual
 ARCHIVO_CONTEXTUAL = 'contexto.json'
-
-# Crear archivos necesarios si no existen
-def crear_archivos(email_usuario):
-    carpeta_usuario = "archivos_usuario"
-    archivo_conversaciones = f"{email_usuario}.json"
-    archivos = [ARCHIVO_CONTEXTUAL, archivo_conversaciones]
-    
-    # Crea la carpeta si no existe
-    if not os.path.exists(carpeta_usuario):
-        os.makedirs(carpeta_usuario)
-    
-    for archivo in archivos:
-        ruta_archivo = os.path.join(carpeta_usuario, archivo)
-        try:
-            with open(ruta_archivo, 'r') as f:
-                pass
-        except FileNotFoundError:
-            with open(ruta_archivo, 'w') as f:
-                json.dump({}, f)
 
 
 
@@ -78,54 +60,25 @@ def cargar_contexto():
 # Guardar información contextual en el archivo JSON
 def guardar_contexto(contexto):
     with open(ARCHIVO_CONTEXTUAL, 'w') as file:
-        print(contexto)
         json.dump(contexto, file)
 
-# Cargar conversaciones desde el archivo JSON
-def cargar_conversaciones(email_usuario):
-    if 'usuario' in session:
-        archivo_conversaciones = f"{email_usuario}.json"
-        with open(archivo_conversaciones, 'r') as file:
-            conversaciones = json.load(file)
-            return conversaciones
-    else:
-        # Manejar el caso cuando no se encuentra el usuario en la sesión
-        return []
 
 
 
-# Guardar conversaciones en el archivo JSON
-def guardar_conversaciones(email_usuario, conversaciones):
-    if 'usuario' in session:
-        archivo_conversaciones = f"{email_usuario}.json"
-        try:
-            with open(archivo_conversaciones, 'r') as file:
-                conversaciones_previas = json.load(file)
-        except FileNotFoundError:
-            conversaciones_previas = []  # Si el archivo no existe, crear una nueva lista de conversaciones
-
-        if isinstance(conversaciones, list):
-            conversaciones_previas.append(conversaciones)  # Agregar las nuevas conversaciones a la lista previa
-
-        try:
-            with open(archivo_conversaciones, 'w') as file:
-                json.dump(conversaciones_previas, file)
-        except Exception as e:
-            traceback.print_exc()  # Imprimir la traza de error
 
 
 
 # Obtener respuesta utilizando la API de OpenAI
-def obtener_respuesta_gpt3(pregunta, conversaciones, key):
-    if 'usuario' in session:
+def obtener_respuesta_gpt3(pregunta, key):
+    if 'nombre' in session:
         openai.api_key = key
         contexto = cargar_contexto()
         contexto['pregunta'] = pregunta
         guardar_contexto(contexto)
         
-        conversaciones_list = [(key, value) for key, value in conversaciones.items()]
-        conversacion_actual = conversaciones_list + [(pregunta, '')]
-        entrada = '\n'.join(f'Usuario: {user}\nBot: {bot}' for user, bot in conversacion_actual)
+        nombre_usuario = session['nombre']
+        
+        entrada = f'{nombre_usuario}: {pregunta}'
         tokens_entrada = nltk.word_tokenize(entrada)
         
         # Eliminar líneas que comienzan con "Usuario:" y "Bot:"
@@ -147,7 +100,6 @@ def obtener_respuesta_gpt3(pregunta, conversaciones, key):
         nueva_respuesta = respuesta.choices[0].text.strip()
         
         # Agregar la nueva respuesta al cerebro de conversaciones sin consumir todos los tokens
-        conversaciones[str(uuid.uuid4())] = nueva_respuesta
         
         return nueva_respuesta
 
@@ -249,56 +201,65 @@ def before_request():
 
 @app.route('/auth/register', methods=["POST", "GET"])
 def register():
-    if request.method == "POST":
-        id_usuario = str(uuid.uuid4())
-        nombre = request.form.get('nombre')
-        email = request.form.get('email')
-        password = request.form.get('contraseña')
-        hashpassword = hashlib.sha256()
-        hashpassword.update(password.encode('utf8'))
-        hash_value = hashpassword.hexdigest()
-        api = request.form.get('openai')
-        code = 0
-        reason = "NO"
-        numeros = ''.join(random.choices(string.digits, k=4))
-        cur1 = mysql.connection.cursor()
-        cur1.execute("SELECT usuario from usuarios Where usuario = %s", (email,))
-        user = cur1.fetchone()
-        
-        # Verificar la API ingresada
-        try:
-            openai.ChatCompletion.create(
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": "Who won the world series in 2020?"},
-                    {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-                    {"role": "user", "content": "Where was it played?"}
-                ],
-                model="gpt-3.5-turbo",
-                api_key=api
-            )
-        except openai.error.AuthenticationError:
-            return render_template('auth/register.html', error="La API ingresada es incorrecta")
-        except Exception as e:
-            return render_template('auth/register.html', error="Error al verificar la API: " + str(e))
-        
-        if user is None:
+    try:
+        if request.method == "POST":
+            id_usuario = str(uuid.uuid4())
+            nombre = request.form.get('nombre')
+            apellido = request.form.get('apellido')
+            email = request.form.get('email')
+            password = request.form.get('contraseña')
+            hashpassword = hashlib.sha256()
+            hashpassword.update(password.encode('utf8'))
+            hash_value = hashpassword.hexdigest()
+            api = request.form.get('openai')
+            code = 0
+            reason = "NO"
+            numeros = ''.join(random.choices(string.digits, k=4))
             cur1 = mysql.connection.cursor()
-            cur1.execute("INSERT INTO verificacion VALUES (%s, %s, %s, %s)",
-                         (id_usuario, reason, numeros, datetime.now()))
-            cur1.close()
-    
-            cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s)",
-                         (code, id_usuario, nombre, email, hash_value, api))
-            mysql.connection.commit()
-    
-            flash("Felicidades, ya casi eres parte de Genuine. Inicia Sesión por seguridad.")
-            return redirect(url_for('login'))
+            cur1.execute("SELECT email from usuarios Where email = %s", (email,))
+            user = cur1.fetchone()
+
+            try:
+                openai.ChatCompletion.create(
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": "Who won the world series in 2020?"},
+                        {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+                        {"role": "user", "content": "Where was it played?"}
+                    ],
+                    model="gpt-3.5-turbo",
+                    api_key=api
+                )
+            except openai.error.AuthenticationError:
+                return render_template('auth/register.html', error="La API ingresada es incorrecta",
+                                       nombre='', email='', contraseña='', openai='')
+            except Exception as e:
+                return render_template('auth/register.html', error="Error al verificar la API: " + str(e),
+                                       nombre='', email='', contraseña='', openai='')
+
+            if user is None:
+                cur1 = mysql.connection.cursor()
+                cur1.execute("INSERT INTO verificacion VALUES (%s, %s, %s, %s)",
+                             (id_usuario, reason, numeros, datetime.now()))
+                cur1.close()
+
+                cur = mysql.connection.cursor()
+                cur.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                             (code, id_usuario, nombre, apellido, email, hash_value, api, datetime.now()))
+                mysql.connection.commit()
+
+                flash("Felicidades, ya casi eres parte de Genuine. Inicia Sesión por seguridad.")
+                return redirect(url_for('login'))
+            else:
+                return render_template('auth/register.html', error="El usuario ya existe",
+                                       nombre='', email='', contraseña='', openai='')
         else:
-            return render_template('auth/register.html', error="El usuario ya existe")
-    else:
-        return render_template('auth/register.html')
+            return render_template('auth/register.html')
+    except Exception as e:
+        traceback.print_exc()
+        return render_template('auth/register.html', errorL= error100 ,
+                               nombre='', email='', contraseña='', openai='')
+
 
 
 # Diccionario para almacenar los intentos de inicio de sesión fallidos por IP
@@ -328,64 +289,68 @@ def check_block_ip(ip):
 @app.route('/auth', methods=["POST", "GET"])
 def login():
     if request.method == 'POST':
-        ip = request.remote_addr  # Obtener la IP del cliente
-        if check_block_ip(ip):
-            flash("Tu IP ha sido bloqueada por demasiados intentos fallidos. Intenta nuevamente más tarde.")
-            return render_template('auth/login.html')
+        try:
+            ip = request.remote_addr  # Obtener la IP del cliente
+            if check_block_ip(ip):
+                flash("Intente de nuevo mas tarde.")
+                return render_template('auth/login.html')
 
-        usuario = request.form['email']
-        contraseña = request.form['contraseña']
-        contraseñahasheada = hashlib.sha256()
-        contraseñahasheada.update(contraseña.encode('utf8'))
-        hash_ingresada = contraseñahasheada.hexdigest()
+            usuario = request.form['email']
+            contraseña = request.form['contraseña']
+            contraseñahasheada = hashlib.sha256()
+            contraseñahasheada.update(contraseña.encode('utf8'))
+            hash_ingresada = contraseñahasheada.hexdigest()
 
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM usuarios WHERE usuario = %s ", (usuario,))
-        user = cur.fetchone()
-        cur.close()
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM usuarios WHERE email = %s ", (usuario,))
+            user = cur.fetchone()
+            cur.close()
 
-        if user is not None:
-            contraseñaalma = user[4]
-            if hash_ingresada == contraseñaalma:
-                session['id'] = user[0]
-                session['idgenuine'] = user[1]
-                session['nombre'] = user[2]
-                session['usuario'] = user[3]
-                session['api'] = user[5]  # Set the 'api' key in the session dictionary
-                email_usuario = session['usuario']
-                crear_archivos(email_usuario)
+            if user is not None:
+                contraseñaalma = user[5]
+                if hash_ingresada == contraseñaalma:
+                    session['id'] = user[0]
+                    session['idgenuine'] = user[1]
+                    session['nombre'] = user[2]
+                    session['apellido'] = user[3]
+                    session['usuario'] = user[4]
+                    session['api'] = user[6]  # Set the 'api' key in the session dictionary
+                    email_usuario = session['usuario']
 
-                cur1 = mysql.connection.cursor()
-                cur1.execute("SELECT * FROM verificacion WHERE idblid = %s ", (session['idgenuine'],))
-                verificacion = cur1.fetchone()
-                cur1.close()
+                    cur1 = mysql.connection.cursor()
+                    cur1.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session['idgenuine'],))
+                    verificacion = cur1.fetchone()
+                    cur1.close()
 
-                if verificacion is not None:
-                    session['verificado'] = verificacion[1]
-                    if session['verificado'] == "NO":
-                        return redirect(url_for('verificacion'))
+                    if verificacion is not None:
+                        session['verificado'] = verificacion[1]
+                        if session['verificado'] == "NO":
+                            return redirect(url_for('verificacion'))
+                        else:
+                            # Restablecer el contador de intentos de inicio de sesión fallidos para la IP actual
+                            if ip in failed_login_attempts:
+                                del failed_login_attempts[ip]
+                            return redirect(url_for('index'))
                     else:
-                        # Restablecer el contador de intentos de inicio de sesión fallidos para la IP actual
-                        if ip in failed_login_attempts:
-                            del failed_login_attempts[ip]
-                        return redirect(url_for('index'))
+                        return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
                 else:
+                    # Incrementar el contador de intentos de inicio de sesión fallidos para la IP actual
+                    if ip in failed_login_attempts:
+                        failed_login_attempts[ip] += 1
+                    else:
+                        failed_login_attempts[ip] = 1
+
+                    # Verificar si se alcanzó el límite de intentos fallidos
+                    if failed_login_attempts[ip] >= 4:
+                        tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
+                        blocked_ips[ip] = tiempo_desbloqueo
+
                     return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
             else:
-                # Incrementar el contador de intentos de inicio de sesión fallidos para la IP actual
-                if ip in failed_login_attempts:
-                    failed_login_attempts[ip] += 1
-                else:
-                    failed_login_attempts[ip] = 1
-
-                # Verificar si se alcanzó el límite de intentos fallidos
-                if failed_login_attempts[ip] >= 4:
-                    tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
-                    blocked_ips[ip] = tiempo_desbloqueo
-
                 return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
-        else:
-            return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
+        except Exception as e:
+            traceback.print_exc()
+            return render_template('auth/login.html', errorL = error100, email = '', contraseña = '')
     else:
         return render_template('auth/login.html')
 
@@ -400,16 +365,20 @@ def login():
 @app.route('/auth/verificacion', methods=["GET", "POST"])
 def verificacion():
     if request.method == 'POST':
-        codigo = request.form['codigo']
+        codigo1 = request.form['code1']
+        codigo2 = request.form['code2']
+        codigo3 = request.form['code3']
+        codigo4 = request.form['code4']
+        codigo = codigo1 + codigo2 + codigo3 + codigo4
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM verificacion WHERE idblid = %s ", (session.get('idgenuine'),))
+        cur.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session.get('idgenuine'),))
         codigov = cur.fetchone()
         cur.close()
         if codigov is not None:
             if codigo == codigov[2]:
                 idgenuine = session['idgenuine']
                 cur = mysql.connection.cursor()
-                cur.execute("UPDATE verificacion SET verificado = %s WHERE idblid = %s", ("SI", idgenuine))
+                cur.execute("UPDATE verificacion SET verificado = %s WHERE idusuario = %s", ("SI", idgenuine))
                 mysql.connection.commit()
                 cur.close()
                 session['verificado'] = "SI"
@@ -423,10 +392,10 @@ def verificacion():
 
                 return redirect(url_for('index'))
             else:
-                return render_template('auth/verificacion.html', error='Código incorrecto')
+                return render_template('auth/verificacion.html', error='Código incorrecto', codigo = '', codigo1 = '', codigo2 = '', codigo3 = '', codigo4 = '')
     else:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM verificacion WHERE idblid = %s ", (session.get('idgenuine'),))
+        cur.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session.get('idgenuine'),))
         code = cur.fetchone()
         cur.close()
         if code is None or code[2] is None:
@@ -490,21 +459,54 @@ def resend():
 @app.route('/salir')
 def salir():
     email_usuario = session.get('idgenuine')
-    conversaciones = cargar_conversaciones(email_usuario)
-    guardar_conversaciones(email_usuario, conversaciones)
     session.clear()
     return redirect(url_for('home'))
 # Ruta principal, chat
 @app.route('/')
 def index():
     email_usuario = session.get('idgenuine')
-    conversaciones = cargar_conversaciones(email_usuario)
-    return render_template('chat.html', conversaciones=conversaciones)
+    return render_template('chat.html')
+
+
+
+
+
+@app.route('/generator/img', methods=['POST'])
+def dalle():
+    openai.api_key = session['api']
+    prompt = request.form.get('prompt')  # Obtén el texto de entrada del formulario
+
+    # Llama a la API de DALL-E para generar la imagen
+    try:
+        response = openai.Completion.create(
+            engine='davinci-codex',
+            prompt=prompt,
+            max_tokens=0,  # Configura el valor adecuado para generar una imagen
+            temperature=0.7,  # Ajusta la temperatura según tus preferencias
+            n=1,  # Número de respuestas a generar
+            stop=None,  # Palabras de detención adicionales para limitar la generación
+            timeout=10  # Tiempo de espera en segundos para la solicitud de la API
+        )
+        
+        # Verifica que se haya generado una respuesta válida
+        if response.choices and response.choices[0].text:
+            image_url = response.choices[0].text.strip()  # Obtiene la URL de la imagen generada
+            return render_template('Dall-e.html', image_url=image_url)
+        else:
+            return render_template('Dall-e.html', error='No se pudo generar la imagen.')
+    
+    except Exception as e:
+        return render_template('Dall-e.html', error=str(e))
+
+
 
 
 @app.route('/home')
 def home():
     return render_template('index.html')
+
+
+
 
 
 @app.route('/read/pdf', methods=['GET', 'POST'])
@@ -534,28 +536,6 @@ def read_pdf():
 
 
 
-@app.route('/speech-to-text', methods=['POST'])
-def speech_to_text():
-    # Obtener el archivo de audio enviado por el cliente
-    audio_file = request.files['audio']
-
-    # Crear un reconocedor de voz
-    recognizer = sr.Recognizer()
-
-    try:
-        # Leer el archivo de audio utilizando SpeechRecognition
-        with sr.AudioFile(audio_file) as source:
-            audio_data = recognizer.record(source)
-
-        # Realizar el reconocimiento de voz
-        text = recognizer.recognize_google(audio_data, language='es-ES')
-
-        # Devolver el texto reconocido como respuesta
-        return text
-    except Exception as e:
-        # Manejar cualquier error que ocurra durante el reconocimiento de voz
-        return str(e)
-
 
 
 
@@ -568,9 +548,7 @@ def speech_to_text():
 @app.route('/get_response', methods=['POST'])
 def get_response():
     mensaje = request.form['user_message']
-    email_usuario = session['idgenuine']
     key = session['api']
-    print(key)
 
     if mensaje.startswith('word:'):
         # Solicitar un trabajo en Word
@@ -582,13 +560,11 @@ def get_response():
         return redirect(url_for('work_pdf', content=content))
     else:
         # Obtener respuesta del modelo GPT-3
-        conversaciones = cargar_conversaciones(email_usuario)
-
         try:
-            response = obtener_respuesta_gpt3(mensaje, conversaciones, key=key)
-            guardar_conversaciones(email_usuario, conversaciones)
-            print(conversaciones)
+            response = obtener_respuesta_gpt3(mensaje, key=key)
+
             return response
+
         except openai.error.AuthenticationError:
             mensaje_error = 'La API ingresada es incorrecta'
             return mensaje_error
@@ -598,10 +574,11 @@ def get_response():
         except Exception as e:
             mensaje_error = 'Ha ocurrido un error: ' + str(e)
             return mensaje_error
+        
 
-        # Guardar conversaciones actualizadas
 
 if __name__ == '__main__':
+
 
     # Iniciar la aplicación Flask
     app.run(debug=True) 

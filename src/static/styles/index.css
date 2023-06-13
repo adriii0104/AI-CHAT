@@ -67,7 +67,7 @@ body {
     white-space: nowrap;
     border-right: .15em solid #333;
     font-size: 21px;
-    animation: typing 3s steps(40) infinite, reset-animation 40s infinite;
+    animation: typing 3s steps(40) infinite, reset-animation 20s infinite;
 }
 
 @keyframes typing {

@@ -26,6 +26,7 @@ body {
     flex-direction: column;
     align-items: center;
     border-radius: 4pt;
+
 }
 
 #altern-log i {
@@ -188,4 +189,39 @@ outline: none;
       transform: rotate(360deg);
     }
   }
-  
+  .code-input {
+    display: flex;
+    justify-content: center;
+  }
+
+  .code-input input {
+    width: 45px;
+    height: 50px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 5px;
+  }
+  .code-input input:focus{
+    outline: none;
+    border: 2px solid #038effb7;
+    animation: blink 0.9s infinite;
+  }
+  @keyframes blink {
+    0% {
+      border: 2px solid #30638db7;
+    }
+    100% {
+      border: 2px solid #008cffe5;
+    }
+  }
+  .user-box .code-input{
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .code-input input{
+    caret-color: transparent;
+  }

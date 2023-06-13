@@ -1,4 +1,4 @@
-{% extends './plantillas/plantillas-auth.html' %}
+{% extends './plantillas/base.html' %}
 
 {% block href %} Login {% endblock %}
 
@@ -35,12 +35,36 @@
     <div id="text-indication">
       <p style="font-size: 0.95em; border-bottom: 1px solid #80808052;">Or register with email</p>
       <p class="error-email" id="error-email"></p>
-    </div>
+      <ul class="flash-messages">
+        {% with messages = get_flashed_messages() %}
+    {% if messages %}
+  
+        {% for message in messages %}
+          <li style="position: absolute; width: 100%; font-size: 0.85em;">{{ message }}</li>
+          <li style="position: absolute; width: 100%; font-size: 0.85em;">{{ message }}</li>
+  
+        {% endfor %}
+  
+    {% endif %}
+  
+  {% endwith %}
+  {% if errorL %}
+  <li style="position: absolute; width: 100%; font-size: 0.85em;">{{ errorL }}</li>
+  {% endif %}
+  <li style="position: absolute; width: 100%; font-size: 0.85em;" id="error"></li>
+  
+  
+  </ul>
+    </div><br>
 
     <form method="post" onsubmit="return check()">
       <div class="user-box">
-        <input type="text" id="nombre" oninput="validate()" name="nombre"  placeholder="Jane Doe" autocomplete="off" required>
-        <label>Name and Last Name</label>
+        <input type="text" id="nombre" oninput="validate()" name="nombre"  placeholder="Jane" autocomplete="off" required>
+        <label>Name</label>
+      </div><br>
+      <div class="user-box">
+        <input type="text" id="nombre" oninput="validate()" name="apellido"  placeholder="Doe" autocomplete="off" required>
+        <label>Last name</label>
       </div><br>
       <div class="user-box">
         <input type="text" id="email" oninput="validate()" name="email" placeholder="janedoe@genuine.com" autocomplete="off" required>
@@ -49,7 +73,7 @@
 
       </div><br>
       <div class="user-box">
-        <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="off" required>
+        <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="new-password" required>
         <label>Password</label>
       </div><br>
       <div class="user-box">
@@ -57,7 +81,7 @@
         <label>Confirm password</label>
       </div><br>
       <div class="user-box">
-        <input type="text" id="api" name="openai" oninput="validate()" placeholder="sdk-xxxxxxxxxxxx" autocomplete="off" required>
+        <input type="text" id="api" name="openai" oninput="validate()" placeholder="sk-xxxxxxxxxxxx" autocomplete="off" required>
         <label>Api OpenAi</label>
       </div>
       <br>

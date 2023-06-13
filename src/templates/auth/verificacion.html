@@ -1,6 +1,5 @@
 {% extends './plantillas/plantilla-chat.html' %}
 
-
 {% block chat %}
 <head>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/verificacion.css') }}">
@@ -8,6 +7,9 @@
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
 </head>
+<style>
+
+</style>
 
 <div class="content">
   <div class="log-in-card">
@@ -19,48 +21,99 @@
 
     <p><img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
     <div id="altern-log">
-      <p>
-        Te hemos enviado un codigo a {{ session['usuario'] }}. <br>
-        Por favor desde que lo recibas escribelo.
-    </p>
-    {% if error %}
-    <div id="error">{{ error }}</div>
-    {% endif %}
+      <p style="pointer-events: none !important;">
+        Te hemos enviado un código a {{ session['usuario'] }}. <br>
+        Por favor, tan pronto como lo recibas, escríbelo.
+      </p>
+      {% if error %}
+      <div id="error" style="pointer-events: none;">{{ error }}</div>
+      {% endif %}
     </div><br><br><br><br>
 
     <div id="text-indication">
-        <a href="{{ url_for ('resend') }}">
-      <p class="log">Resend code</p>
-    </a>
+      <a href="{{ url_for ('resend') }}">
+        <p class="log">Resend code</p>
+      </a>
     </div>
 
-    <form method="post" >
+    <form id="verification-form" method="post" >
       <div class="user-box">
-        <input id="codigo" oninput="validate()" name="codigo" placeholder="Código" autocomplete="on" required>
-        <label >Te hemos enviado un código de verificación</label>
+        <div class="code-input">
+          <input type="text" id="input1" name="code1" oninput="checkLengthAndFocus(this, 1)" class="digit-input" maxlength="1" required>
+          <input type="text" id="input2" name="code2" oninput="checkLengthAndFocus(this, 2)" class="digit-input" maxlength="1" required>
+          <input type="text" id="input3" name="code3" oninput="checkLengthAndFocus(this, 3)" class="digit-input" maxlength="1" required>
+          <input type="text" id="input4" name="code4" oninput="checkLengthAndFocus(this, 4)" class="digit-input" maxlength="1" required>
+        </div>
         <br><br><br>
       </div>
-      <button class="i-button-register" id="button" disabled >Verificate</button><br><br><br><br><br>
     </form>
-  </div><br><br><br>
+  </div><br><br><br><br><br><br>
   <p style="font-size: 0.65em; color: rgba(150, 150, 150, 0.603);">Identidicador: {{ session['idgenuine' ]}}</p>
 </div>
 </section>
 <script>
-function validate() {
-  let codigo = document.getElementById("codigo").value;
-  var button = document.getElementById("button");
+  function validate() {
+    let digits = document.getElementsByClassName("digit-input");
 
+    const isFormValid = Array.from(digits).every(digit => digit.value.length === 1);
 
-  const isFormValid = codigo.length > 3;
+    if (isFormValid) {
+      document.getElementById("verification-form").submit();
+    }
+  }
 
-  button.disabled = !isFormValid;
-  button.style.color = isFormValid ? "black" : "#969696b0";
-  button.style.backgroundColor = isFormValid ? "white" : "#96969631";
-  button.style.cursor = isFormValid ? "pointer" : "default";
-  console.log(isFormValid ? "button enabled" : "button disabled");
-  
-}  
+  document.addEventListener("DOMContentLoaded", function() {
+    let digits = document.getElementsByClassName("digit-input");
+
+    Array.from(digits).forEach((digit, index) => {
+      digit.addEventListener("input", function() {
+        checkLengthAndFocus(this, index + 2);
+        validate();
+      });
+    });
+  });
+
+  window.onload = function () {
+    let firstInput = document.getElementById("input1");
+    firstInput.focus();
+  };
+
+  function checkLengthAndFocus(input, nextInputIndex) {
+  const maxLength = parseInt(input.getAttribute("maxlength"));
+  const currentValue = input.value;
+
+  if (currentValue.length >= maxLength) {
+    if (nextInputIndex <= 4) {
+      const nextInput = document.getElementById("input" + nextInputIndex);
+      nextInput.focus();
+    }
+  } else {
+
+  }
+}
+
+function handleBackspace(event, input, previousInput) {
+  if (event.key === "Backspace" && input.value === "") {
+    previousInput.focus();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  let digits = document.getElementsByClassName("digit-input");
+
+  Array.from(digits).forEach((digit, index) => {
+    const previousInput = index > 0 ? digits[index - 1] : null;
+
+    digit.addEventListener("input", function () {
+      checkLengthAndFocus(this, index + 2);
+      validate();
+    });
+
+    digit.addEventListener("keydown", function (event) {
+      handleBackspace(event, this, previousInput);
+    });
+  });
+});
 </script>
 
 </body>
