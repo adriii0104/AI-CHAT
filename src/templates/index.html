@@ -10,10 +10,10 @@
         
         @keyframes floatAnimation {
             0% {
-                transform: translateY(0);
+                transform: translateX(0);
             }
             100% {
-                transform: translateY(20px);
+                transform: translateX(20px);
             }
         }
     </style>
@@ -26,40 +26,33 @@
     <label><i class='fi fi-rr-search'></i> <span> Documentacion</span></label>
 </div>
 
-<div id="principal">
+<div id="principal" >
     <h4>Genuine Chat</h4>
     <p>Welcome to the best AI Chat</p><br><br>
-        <button id="button">Start</button>
+        <button id="button" style="pointer-events: all;" onclick="showSpinner(button)">Start</button>
 </div>
-<div id="txt">
-    <p id="texto">
-        ¡The future is already near, why don't you start living it?! <i class="fi fi-ss-user-robot"></i>.
-    </p>
+<div id="txt" style="pointer-events: none;">
+    <p class="texto" style="display: none;"> ¡The future is already near, why don't you start living it?! </p>
+    <p class="texto" style="display: none;">¡Dare to challenge the limits and conquer the future!</p>
+    <p class="texto" style="display: none;">Embark on a journey towards a world of unlimited opportunities!</p>
+    <p class="texto" style="display: none;">¡Dare to talk to the best AI Chat</p>
+    <p class="texto" style="display: none;">¡Discover the secret to achieving your boldest dreams!</p>
+    <p class="texto" style="display: none;">Be the protagonist of your own epic story!</p>
+    <p class="texto" style="display: none;">Be the protagonist of your own epic story!</p>
+    <p class="texto" style="display: none;">Chase your dreams fearlessly and relentlessly.</p>
+    <p class="texto" style="display: none;">Embrace challenges as stepping stones to success.</p>
+    <p class="texto" style="display: none;">Unleash your inner strength and conquer the impossible.</p>
+    <p class="texto" style="display: none;">Believe in yourself and you will achieve greatness.</p>
+    <p class="texto" style="display: none;">Strive for progress, not perfection.</p>
+    <p class="texto" style="display: none;">Dare to be different and create your own path.</p>
+    <p class="texto" style="display: none;">Never underestimate the power of your determination.</p>
+    <p class="texto" style="display: none;">Embrace the unknown and let it fuel your growth.</p>
+    <p class="texto" style="display: none;">In the face of adversity, find your inner resilience.</p>
+    <!-- Agrega más elementos <p> con la clase "texto" para mostrar más textos -->
 </div>
 
 <script>
-    // Espera a que se cargue el contenido de la página antes de ejecutar el código
-    document.addEventListener("DOMContentLoaded", function(event) {
-        // Obtén el elemento del texto
-        var textElement = document.getElementById("txt");
-
-        // Calcula la duración de la animación basándote en el número de caracteres del texto
-        var textLength = textElement.textContent.length;
-        var typingDuration = textLength * 50; // Duración de la animación de escritura
-
-        // Establece la duración de la animación en el estilo CSS
-        textElement.style.animationDuration = typingDuration + "ms";
-    });
-
-    document.getElementById('button').addEventListener('click', function() {
-  // Mostrar el spinner y retrasar la carga de la página durante 2 segundos
-  showSpinner(this);
-  setTimeout(function() {
-    window.location.href = "/auth/register"; 
-  }, 333);
-});
-
-function showSpinner(button) {
+        function showSpinner(button) {
   // Crear el elemento del spinner
   var spinner = document.createElement('span');
   spinner.classList.add('spinner');
@@ -70,6 +63,29 @@ function showSpinner(button) {
 
   // Mostrar el spinner cambiando el valor de display
   spinner.style.display = 'inline-block';
+  window.location.href = 'http://127.0.0.1:5000/auth/register';
+
+  // Redirigir después de mostrar el spinner
 }
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var textElements = document.getElementsByClassName("texto");
+        var delay = 20000; // Retraso en milisegundos entre la aparición y desaparición de cada texto
+        var currentIndex = 0;
+
+        function showNextText() {
+            if (currentIndex < textElements.length) {
+                textElements[currentIndex].style.display = "block";
+                setTimeout(function() {
+                    textElements[currentIndex].style.display = "none";
+                    currentIndex++;
+                    showNextText();
+                }, delay);
+            }
+        }
+
+        showNextText();
+    });
+
+
 </script>
 {% endblock %}
