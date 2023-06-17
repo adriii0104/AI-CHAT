@@ -130,4 +130,18 @@ body {
       transform: rotate(360deg);
     }
   }
+  .copyright{
+    position: fixed;
+    bottom: 0;
+    font-size: 0.70em;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
   
+ .copyright p{
+    color: #686868 !important;
+    margin-top: -25px;
+}
+.copyright i{
+    color: #686868 !important;
+}

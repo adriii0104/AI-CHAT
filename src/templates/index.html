@@ -1,5 +1,7 @@
 {% extends './plantillas/base.html' %}
 
+{% block title %}Home {% endblock %}
+
 {% block body %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
@@ -21,9 +23,24 @@
 <div class="spinner">
     <div class="spinner-circle"></div>
 </div>
-<div id="search" >
-    <input type="search" required>
-    <label><i class='fi fi-rr-search'></i> <span> Documentacion</span></label>
+<div id="search">
+    <input list="list-names" type="search" required>
+    <label><i class='fi fi-rr-search'></i> <span> Documentation</span></label>
+    <datalist id="list-names">
+        <a href="{{ url_for('login') }}">
+        <option value="Api reference"></a>
+
+            </option>
+            <option value="Libraries">
+                <option value="Code">
+                    <option value="GitHub">
+                        <option value="Css">
+                            <option value="Styles">
+                                <option value="OpenAi">
+                                    <option value="Key">
+                                        <option value="User">
+    </datalist>
+
 </div>
 
 <div id="principal" >
@@ -49,6 +66,9 @@
     <p class="texto" style="display: none;">Embrace the unknown and let it fuel your growth.</p>
     <p class="texto" style="display: none;">In the face of adversity, find your inner resilience.</p>
     <!-- Agrega más elementos <p> con la clase "texto" para mostrar más textos -->
+</div>
+<div class="copyright" style="pointer-events: none !important;">
+    <p>All rights reserved <i class="fi fi-rr-copyright"></i> <br> <span style="text-align: center !important; margin-left: 25px; color: #686868 !important; " > GENUINE AI </p>
 </div>
 
 <script>

@@ -1,0 +1,10 @@
+pip install flask
+pip install flask_mysqldb
+pip install SpeechRecognition
+pip install python-docx
+pip install spacy
+pip install pyttsx3
+pip install hashlib
+pip install mysql.connector
+python -m spacy download es_core_news_sm
+pip install nltk

@@ -9,7 +9,7 @@ body {
     background: rgba(0, 0, 0, 0.93);
     color : #fff ;
     min-height: 0vh !important;
-
+    transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
 }
 .user-recognititon{
     font-size: 0.65em !important;
@@ -36,7 +36,6 @@ body {
     font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     display: flex;
     flex-direction: column-reverse; /* Cambio en la dirección de la columna */
-    box-shadow: 0 0 10px rgba(146, 146, 146, 0.1);
 }
 
 #user-input {
@@ -107,11 +106,11 @@ body {
 .user-message {
     height: 15px auto;
     list-style: none;
-    background: rgb(22, 22, 22);
+    background: rgb(56, 56, 56);
 }
 
 .bot-message {
-    background-color: transparent;
+    background-color: rgb(15, 15, 15);
     height: 75px auto !important;
     list-style: none;
     border-top: 1px;
@@ -154,3 +153,42 @@ body {
     vertical-align: middle;
     margin-left: 25px;
 }
+#profile {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    display: flex;
+    padding: 70px 30px;
+  }
+  
+  #profile p {
+    font-size: 1.0em;
+    font-family: Poppins, 'Sans-serif';
+    font-weight: 600;
+    color: white !important;
+    
+  }
+  .regulations{
+    color: #686868;
+    font-size: 0.75em;
+    font-weight: bold;
+    position: fixed;
+
+    text-align: center;
+    bottom: 0;
+  }
+  .regulations span{
+    text-decoration: underline;
+  }
+  .regulations p{
+    margin-top: -25px;
+  }
+  .lg{
+    box-shadow: none;
+    margin: 0 auto;
+    box-shadow: none !important;
+    position: fixed;
+    font-size: 2.25em;
+    pointer-events: none;
+    margin-left: 15%;
+  }

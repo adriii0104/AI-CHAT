@@ -16,13 +16,29 @@
         <div id="user-input">
             <form id="user-form" onsubmit="event.preventDefault(); sendMessage();">
                 <input type="text" id="user-message" placeholder="Escribe un mensaje..." autocomplete="off">
+
+                <input type="hidden" id="user-message" />
                 <button type="submit" id="send-btn"><i class="fi fi-tr-paper-plane-top"></i></button>
                 <button type="button" id="audio-btn" onclick="startListening()"><i class="fi fi-tr-circle-microphone"></i></button>
-                <input type="hidden" id="user-message" />
             </form>
         </div>
+        <h2 class="lg">
+            Genuine
+        </h2>
+        <div class="regulations">
+        <p>
+            This is a free bot. GENUINE is not responsible for the use you make of the chat, in accordance with <span><a href="">regulations</a></span> . UPDATE JUNE 5th.
+        </p>
     </div>
-    <p style="font-size: 0.65em; font-weight: bold; font-family: 'SF Pro Display', sans-serif; color: rgba(150, 150, 150, 0.603);" class="identificador user-recognititon">Identidicador: {{ session['idgenuine' ]}}</p>
+    </div>
+
+    <div id="profile">
+        <div class="profileuser">
+
+        </div>
+        </div>
+        <p style="font-size: 0.65em; font-weight: bold; font-family: 'SF Pro Display', sans-serif; color: rgba(150, 150, 150, 0.603);" class="identificador user-recognititon">Identidicador: {{ session['idgenuine' ]}}</p>
+   
     <script>
         var recognition;
         var isListening = false;

@@ -2,13 +2,13 @@ import json
 import random
 import string
 import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
 import spacy
 import pyttsx3
 from flask import Flask, render_template, request, url_for, redirect, session, flash, send_file, send_from_directory
 import openai
-from sklearn.feature_extraction.text import CountVectorizer
 from flask_mysqldb import MySQL
-from config import  SECRET
+from config import SECRET, HOSTNAME, USER, PASSWORD, DATABASE
 import speech_recognition as sr
 from apis import error
 from utils.verificacion import enviar_correo
@@ -16,19 +16,19 @@ from datetime import datetime, timedelta
 from PyPDF2 import PdfReader, PdfWriter
 from utils.extraccion import correos
 from docx import Document
-import os
 import traceback
 import hashlib
 import uuid
 from manejoerrores import error100
 
+
 app = Flask(__name__)
 
 # Almacenaremos la conexión
-app.config['MYSQL_HOST'] = 'database-ia.coiqzeb3mcw7.us-east-2.rds.amazonaws.com'
-app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = 'Acd20803'
-app.config['MYSQL_DB'] = 'IA'
+app.config['MYSQL_HOST'] = HOSTNAME
+app.config['MYSQL_USER'] = USER
+app.config['MYSQL_PASSWORD'] = PASSWORD
+app.config['MYSQL_DB'] = DATABASE
 app.config['SECRET_KEY'] = SECRET
 mysql = MySQL(app)
 
@@ -97,10 +97,10 @@ def obtener_respuesta_gpt3(pregunta, key):
             temperature=0.7
         )
         
+
         nueva_respuesta = respuesta.choices[0].text.strip()
         
-        # Agregar la nueva respuesta al cerebro de conversaciones sin consumir todos los tokens
-        
+
         return nueva_respuesta
 
 
@@ -114,6 +114,7 @@ def convertir_texto_a_voz(texto):
     engine = pyttsx3.init()
     engine.save_to_file(texto, 'respuesta.wav')
     engine.runAndWait()
+
 
 
 
@@ -441,7 +442,9 @@ def resend():
 
 
 
-
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
 
 
 
@@ -460,35 +463,6 @@ def index():
     return render_template('chat.html')
 
 
-
-
-
-@app.route('/generator/img', methods=['POST'])
-def dalle():
-    openai.api_key = session['api']
-    prompt = request.form.get('prompt')  # Obtén el texto de entrada del formulario
-
-    # Llama a la API de DALL-E para generar la imagen
-    try:
-        response = openai.Completion.create(
-            engine='davinci-codex',
-            prompt=prompt,
-            max_tokens=0,  # Configura el valor adecuado para generar una imagen
-            temperature=0.7,  # Ajusta la temperatura según tus preferencias
-            n=1,  # Número de respuestas a generar
-            stop=None,  # Palabras de detención adicionales para limitar la generación
-            timeout=10  # Tiempo de espera en segundos para la solicitud de la API
-        )
-        
-        # Verifica que se haya generado una respuesta válida
-        if response.choices and response.choices[0].text:
-            image_url = response.choices[0].text.strip()  # Obtiene la URL de la imagen generada
-            return render_template('Dall-e.html', image_url=image_url)
-        else:
-            return render_template('Dall-e.html', error='No se pudo generar la imagen.')
-    
-    except Exception as e:
-        return render_template('Dall-e.html', error=str(e))
 
 
 
