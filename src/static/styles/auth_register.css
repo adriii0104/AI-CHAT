@@ -11,21 +11,22 @@ body {
     padding: 0;
     background-position: center center;
     background-size: 80%;
-    background-color: rgba(0, 0, 0, 0.93);
+    background-color: #0d1117;
 }
 
 .content {
     position: fixed;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 670px;
     background: #242424;
-    height: 950px;
+    height: 860px;
     display: flex;
     flex-direction: column;
     align-items: center;
     border-radius: 4pt;
+    font-family:'Poppins', sans-serif !important;
 }
 
 #altern-log i {
@@ -44,10 +45,12 @@ body {
     padding-left: 7px;
     cursor: auto;
     letter-spacing: 0.16em;
+    font-family:'Poppins', sans-serif !important;
     background: transparent;
 }
 .content .user-box {
     width: 120%;
+    font-family:'Poppins', sans-serif !important;
 }
 
 .content button {
@@ -58,12 +61,14 @@ body {
     border-color: #0000;
     border-radius: 3pt;
     font-size: 0.9em;
+    font-family:'Poppins', sans-serif !important;
 }
 .user-box{
     position: relative;
 }
 .user-box label{
     letter-spacing: 0.16em;
+    font-family:'Poppins', sans-serif !important;
     position: absolute;
     top: 0;
     left: 0;
@@ -102,6 +107,7 @@ outline: none;
     width: 20px;
     height: 20px;
     cursor: pointer;
+    font-family:'Poppins', sans-serif !important;
   }
 
 .content .close {
@@ -113,23 +119,27 @@ outline: none;
     width: 50px;
     height: 40px;
     border-radius: 155px;
+    font-family:'Poppins', sans-serif !important;
 
 }
 
 .content p {
     font-weight: 700;
     font-size: 1.70em;
+    font-family:'Poppins', sans-serif !important;
 }
 
 .log-in-card {
     margin-top: 70px;
     margin-left: -50px;
+    font-family:'Poppins', sans-serif !important;
 
 }
 
 .terms-and-conditions .field {
     color: #2c2c2cb0;
     font-weight: lighter;
+    font-family:'Poppins', sans-serif !important;
 }
 
 .terms-and-conditions span {
@@ -163,12 +173,14 @@ outline: none;
 }
 .error{
     font-size: 0.95em;
+    font-family:'Poppins', sans-serif !important;
 }
 .error-email{
     font-size: 0.95em !important;
     color: red;
     text-align: center;
     margin-top: 20px;
+    font-family:'Poppins', sans-serif !important;
 }
 .spinner {
     display: none; /* Ocultar el spinner inicialmente */

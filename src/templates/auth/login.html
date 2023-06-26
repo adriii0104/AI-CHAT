@@ -49,8 +49,8 @@
   {% if messages %}
 
       {% for message in messages %}
-        <li style="position: absolute; width: 100%; font-size: 0.85em;">{{ message }}</li>
-        <li style="position: absolute; width: 100%; font-size: 0.85em;">{{ message }}</li>
+        <li style="position: absolute; width: 100%; font-size: 0.85em; font-family:'Poppins', sans-serif !important; margin-top: -8px;">{{ message }}</li>
+        <li style="position: absolute; width: 100%; font-size: 0.85em; font-family:'Poppins', sans-serif !important; margin-top: -8px;">{{ message }}</li>
 
       {% endfor %}
 
@@ -58,9 +58,9 @@
 
 {% endwith %}
 {% if errorL %}
-<li style="position: absolute; width: 100%; font-size: 0.85em;">{{ errorL }}</li>
+<li style="position: absolute; width: 100%; font-size: 0.85em; font-family:'Poppins', sans-serif !important; margin-top: -8px;">{{ errorL }}</li>
 {% endif %}
-<li style="position: absolute; width: 100%; font-size: 0.85em;" id="error"></li>
+<li style="position: absolute; width: 100%; font-size: 0.85em; font-family:'Poppins', sans-serif !important; margin-top: -8px;" id="error"></li>
 
 
 </ul>
@@ -68,16 +68,19 @@
 
     <form method="post">
       <div class="user-box">
-        <input type="text" id="email" oninput="validate()" name="email" autocomplete="new-password" required>
-        <label>Email</label>
+        <input type="text" id="email" oninput="validate()" name="email" autocomplete="off" required>
+        <label for="email">Email</label>
       </div><br>
       
       <div class="user-box">
         <input type="password" id="contraseña" name="contraseña" autocomplete="new-password" oninput="validate()" required>
-        <label>Password</label>
-        <span class="password-toggle" onclick="togglePasswordVisibility()"><i class="fi fi-sr-eye"></i></span>
+        <label for="password">Password</label>
       </div>
       <br>
+      <div class="user-box" style="margin-top: -20px;">
+        <label style="margin-left: 15px; font-size: 0.75em;" for="checkbox">Show password</label>
+        <input type="checkbox" id="checkbox" onclick="check()" style="width: 15px;">
+      </div>
 
       {% if error %}
       <script>

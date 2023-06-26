@@ -6,7 +6,7 @@ body {
     background-position: center center;
     background-size: 50%;
     letter-spacing: 0.07em;
-    background: rgba(0, 0, 0, 0.93);
+    background: #0d1117;;
     color : #fff ;
     min-height: 0vh !important;
     transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
@@ -28,6 +28,7 @@ body {
 }
 
 #chat-window {
+    position: relative !important;
     margin-top: 110px;
     margin-bottom: 120px;
     padding: 20px;
@@ -46,10 +47,20 @@ body {
     bottom: 0;
     width: 70%;
 }
+#user-input input{
+    letter-spacing: 0.11em !important;
+}
+#user-input input:focus{
+    outline: none;
+}
+#user-input i{
+    font-size: 24px;
+}
 
 #user-message {
     flex-grow: 1;
-    padding: 15px 275px;
+    padding: 20px 15px;
+    width: 400% !important;
     border: none;
     box-shadow: 0 0 10px rgb(0, 0, 0);
     border-radius: 5px;
@@ -66,17 +77,17 @@ body {
     margin-left: 100%;
 }
 
-
-#send-btn {
-    margin-left: 0px;
-    margin-bottom: 4px;
+#user-input #send-btn {
+    position: absolute;
+    top: 45px;
+    left: 685px;
     background-color: transparent;
     border: none;
     cursor: pointer;
     font-size: 1.95em;
     color: white;
 }
-#send-btn:hover {
+#user-input #send-btn:hover {
     color: rgb(17, 98, 112);
 }
 @keyframes vibrate {
@@ -104,10 +115,17 @@ body {
 }
 
 .user-message {
-    height: 15px auto;
+    height: auto;
+    width: 75%;
     list-style: none;
     background: rgb(56, 56, 56);
 }
+.user-message p{
+    height: 415px auto;
+    list-style: none;
+    background: rgb(56, 56, 56);
+}
+
 
 .bot-message {
     background-color: rgb(15, 15, 15);
@@ -126,15 +144,19 @@ body {
 .voice-message {
     background-color: #fff4e2;
 }
+#user-input #audio-btn {
+    position: absolute;
+    top: 45px;
+    left: 745px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.95em;
+    color: white;
+}
 
 .message-content {
     margin: 0;
-}
-#audio-btn{
-    background: transparent;
-    border: none;
-    font-size: 1.95em;
-    color: white;
 }
 #audio-btn:hover {
     color: rgb(17, 98, 112);

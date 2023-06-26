@@ -20,6 +20,7 @@ import traceback
 import hashlib
 import uuid
 from manejoerrores import error100
+from datetime import date
 
 
 app = Flask(__name__)
@@ -77,8 +78,19 @@ def obtener_respuesta_gpt3(pregunta, key):
         guardar_contexto(contexto)
         
         nombre_usuario = session['nombre']
+        email_usuario = session['usuario']
+        apellido_usuario = session['apellido']
+        anos = session['anos']
+        anonacimiento = session['AAAA']
+        mesnacimiento = session['MM']
+        dianacimiento = session['DD']
+
+
+
+        datosusuario = f'"(Estos son los datos del usuario, no muestres ni respondas con los datos, a menos que el te lo pida. pero responde todas las preguntas que te hagan.): ", "apellido del usuario:" {apellido_usuario}, "edad del usuario:" {anos}, "ano de nacimiento del usuario:"{anonacimiento}, "mes de nacimiento del usuario"{mesnacimiento}, "dia de nacimiento del usuario"{dianacimiento}, "email del usuario:"{email_usuario}"'
+
         
-        entrada = f'{nombre_usuario}: {pregunta}'
+        entrada = f'{datosusuario}"nombre"{nombre_usuario}: {pregunta}'
         tokens_entrada = nltk.word_tokenize(entrada)
         
         # Eliminar líneas que comienzan con "Usuario:" y "Bot:"
@@ -94,7 +106,7 @@ def obtener_respuesta_gpt3(pregunta, key):
             max_tokens=1500,
             n=1,
             stop=None,
-            temperature=0.7
+            temperature=0.4
         )
         
 
@@ -108,12 +120,6 @@ def obtener_respuesta_gpt3(pregunta, key):
 
 
 
-
-# Convertir texto a voz utilizando pyttsx3
-def convertir_texto_a_voz(texto):
-    engine = pyttsx3.init()
-    engine.save_to_file(texto, 'respuesta.wav')
-    engine.runAndWait()
 
 
 
@@ -193,8 +199,10 @@ def before_request():
     if 'usuario' in session and request.endpoint in allowed_routes:
             if session['verificado'] == "NO":
                 return redirect(url_for('verificacion'))
+            elif session['datos'] == "NO":
+                return redirect(url_for('datos'))
             else:
-               return redirect(url_for('index'))
+                return redirect(url_for('index')) 
     elif 'usuario' not in session and request.endpoint not in allowed_routes and not request.path.startswith('/static'):
         return redirect(url_for('home'))
 
@@ -203,6 +211,8 @@ def before_request():
 @app.route('/auth/register', methods=["POST", "GET"])
 def register():
     try:
+        if 'logued' in session and session['logued']:
+                    return redirect(url_for('index'))
         if request.method == "POST":
             id_usuario = str(uuid.uuid4())
             nombre = request.form.get('nombre')
@@ -216,9 +226,9 @@ def register():
             code = 0
             reason = "NO"
             numeros = ''.join(random.choices(string.digits, k=4))
-            cur1 = mysql.connection.cursor()
-            cur1.execute("SELECT email from usuarios Where email = %s", (email,))
-            user = cur1.fetchone()
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT email from usuarios Where email = %s", (email,))
+            user = cur.fetchone()
 
             try:
                 openai.ChatCompletion.create(
@@ -244,13 +254,27 @@ def register():
                              (id_usuario, reason, numeros, datetime.now()))
                 cur1.close()
 
-                cur = mysql.connection.cursor()
-                cur.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                             (code, id_usuario, nombre, apellido, email, hash_value, api, datetime.now()))
+                cur2 = mysql.connection.cursor()
+                cur2.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                             (code, id_usuario, nombre, apellido, email, hash_value, api, datetime.now(), reason))
+                print(hash_value)
+                cur2.close()
+                cur3 = mysql.connection.cursor()
+                cur3.execute("INSERT INTO preferencias VALUES (%s, %s, %s)",
+                             (id_usuario, "TRUE", "TRUE"))
+                cur3.close()
+                cur4 = mysql.connection.cursor()
+                cur4.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
+                log = cur4.fetchone()
+                session['id'] = log[0]
+                session['idgenuine'] = log[1]
+                session['nombre'] = log[2]
+                session['apellido'] = log[3]
+                session['usuario'] = log[4]
+                session['api'] = log[6]  # Set the 'api' key in the session dictionary
+                session['datos'] = log[8]
                 mysql.connection.commit()
-
-                flash("Felicidades, ya casi eres parte de Genuine. Inicia Sesión por seguridad.")
-                return redirect(url_for('login'))
+                return redirect(url_for('verificacion'))
             else:
                 return render_template('auth/register.html', error="El usuario ya existe",
                                        nombre='', email='', contraseña='', openai='')
@@ -287,20 +311,93 @@ def check_block_ip(ip):
         return True
     return False
 
+
+
+
+
+
+@app.route('/aboutyou', methods= ['POST', 'GET']) 
+def datos():
+    try:
+            if 'datoscompletos' in session and session['datoscompletos']:
+                        return redirect(url_for('index'))
+            if request.method == 'POST':
+                        idusuario = session['idgenuine']
+                        gender = request.form['gender']
+                        year = int(request.form['year'])
+                        month = int(request.form['month'])
+                        day = int(request.form['day'])
+                        dob = date(year, month, day)
+                        today = date.today()
+                        yes = "SI"
+                        age = today.year - dob.year
+                        if today.month < dob.month:
+                             age -= 1
+                        elif today.month == dob.month and today.day < dob.day:
+                             age -= 1
+
+                        cur = mysql.connection.cursor()
+                        cur.execute("INSERT INTO datos VALUES (%s, %s, %s, %s, %s, %s)",
+                                    (idusuario, age, year, month, day, gender))
+                        cur1 = mysql.connection.cursor()
+                        cur1.execute("UPDATE usuarios SET datos = %s WHERE idusuarios = %s",
+                                     (yes, idusuario))
+                        session['datoscompletos'] = True
+                        mysql.connection.commit()
+                        cur.close()
+                        cur1 = mysql.connection.cursor()
+                        cur1.execute("SELECT * FROM datos WHERE idusuarios = %s",
+                                     (idusuario,))
+                        datos = cur1.fetchone()
+                        session['gender'] = datos[1]
+                        session['anos'] = datos[2]
+                        session['AAAA'] = datos[3]
+                        session['MM'] = datos[4]
+                        session['DD'] = datos[5]
+                        return redirect(url_for('index'))
+    except Exception as e:
+        traceback.print_exc()
+        return render_template('aboutyou.html', errorL = e)
+    
+    return render_template('aboutyou.html')
+        
+
+
+
+
+
 @app.route('/auth', methods=["POST", "GET"])
 def login():
+    if 'logued' in session and session['logued']:
+        return redirect(url_for('index'))
     if request.method == 'POST':
         try:
             ip = request.remote_addr  # Obtener la IP del cliente
             if check_block_ip(ip):
-                flash("Intente de nuevo mas tarde.")
+                flash("Intente de nuevo más tarde.")
+                if 'emailsend' not in session:
+                    cur2 = mysql.connection.cursor()
+                    cur2.execute("SELECT email From usuarios WHERE email = %s", (session['failed_login_attemptsemail'],))
+                    email1 = cur2.fetchone()
+                    cur2.close()
+                    if email1:
+                        asunto = "¡Tu cuenta está en peligro!"
+                        destinario = session['failed_login_attemptsemail']
+                        contenido = """Alguien está intentando acceder a tu cuenta. Si no fuiste tú, debes cambiar tu contraseña lo antes posible.
+                        Si fuiste tú y no recuerdas tu contraseña, haz clic en este enlace:
+                        http://localhost:5000/auth/resetpassword
+                        Si se sigue introduciendo la contraseña incorrecta, nos veremos obligados a bloquear tu cuenta por un tiempo limitado.
+                        Gracias. Atentamente, María de Genuine."""
+                        enviar_correo(destinario, asunto, contenido)
+                        session['emailsend'] = True
                 return render_template('auth/login.html')
 
-            usuario = request.form['email']
-            contraseña = request.form['contraseña']
-            contraseñahasheada = hashlib.sha256()
-            contraseñahasheada.update(contraseña.encode('utf8'))
-            hash_ingresada = contraseñahasheada.hexdigest()
+            usuario = request.form.get('email')
+            contraseña = request.form.get('contraseña')
+            hashpassword = hashlib.sha256()
+            hashpassword.update(contraseña.encode('utf8'))
+            hash_value = hashpassword.hexdigest()
+            print(hash_value)
 
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM usuarios WHERE email = %s ", (usuario,))
@@ -308,35 +405,64 @@ def login():
             cur.close()
 
             if user is not None:
+                print("el usuario se encontro en la base de datos")
                 contraseñaalma = user[5]
-                if hash_ingresada == contraseñaalma:
+                if hash_value == contraseñaalma:
+                    print("La contrasena coincide")
                     session['id'] = user[0]
                     session['idgenuine'] = user[1]
                     session['nombre'] = user[2]
                     session['apellido'] = user[3]
                     session['usuario'] = user[4]
                     session['api'] = user[6]  # Set the 'api' key in the session dictionary
-
+                    session['datos'] = user[8]
                     cur1 = mysql.connection.cursor()
-                    cur1.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session['idgenuine'],))
+                    cur1.execute("SELECT * FROM verificacion WHERE idusuario = %s", (session['idgenuine'],))
                     verificacion = cur1.fetchone()
                     cur1.close()
 
                     if verificacion is not None:
+                        print("Verificacion se encontro")
                         session['verificado'] = verificacion[1]
                         if session['verificado'] == "NO":
+                            print("Verificacion es igual a no")
                             return redirect(url_for('verificacion'))
+                        
                         else:
-                            # Restablecer el contador de intentos de inicio de sesión fallidos para la IP actual
-                            if ip in failed_login_attempts:
-                                del failed_login_attempts[ip]
-                            return redirect(url_for('index'))
+                            if session['datos'] == 'NO':
+                                print("Vedatos se encontro")
+                                return redirect(url_for('datos'))
+                            else:
+                                if ip in failed_login_attempts:
+                                    print("se chequeo la ip")
+                                    del failed_login_attempts[ip]
+                                session['logued'] = True
+                                cur1 = mysql.connection.cursor()
+                                cur1.execute("SELECT * FROM datos WHERE idusuario = %s", (session['idgenuine'],))
+                                datos = cur1.fetchone()
+                                cur1.close()
+                                session['anos'] = datos[1]
+                                session['AAAA'] = datos[2]
+                                session['MM'] = datos[3]
+                                session['DD'] = datos[4]
+                                cur3 = mysql.connection.cursor()
+                                cur3.execute("SELECT * FROM preferencias WHERE idusuario = %s",
+                                             (session['idgenuine'],))
+                                preferencias = cur3.fetchone()
+                                if preferencias is None:
+                                    print("Se encontro pereferencias")
+                                    cur4 = mysql.connection.cursor()
+                                    cur4.execute("INSERT INTO preferencias VALUES (%s, %s, %s)",
+                                                 (session['idgenuine'], "TRUE", "FALSE"))
+                                return redirect(url_for('index'))
                     else:
                         return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
                 else:
                     # Incrementar el contador de intentos de inicio de sesión fallidos para la IP actual
                     if ip in failed_login_attempts:
+                        print("Incremento la ip intentos")
                         failed_login_attempts[ip] += 1
+                        session['failed_login_attemptsemail'] = usuario
                     else:
                         failed_login_attempts[ip] = 1
 
@@ -344,13 +470,13 @@ def login():
                     if failed_login_attempts[ip] >= 4:
                         tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
                         blocked_ips[ip] = tiempo_desbloqueo
-
+                    print("Verificacion se encontro")
                     return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
             else:
                 return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
         except Exception as e:
             traceback.print_exc()
-            return render_template('auth/login.html', errorL = error100, email = '', contraseña = '')
+            return render_template('auth/login.html', errorL=error100, email='', contraseña='')
     else:
         return render_template('auth/login.html')
 
@@ -362,50 +488,58 @@ def login():
 
 
 
+
 @app.route('/auth/verificacion', methods=["GET", "POST"])
 def verificacion():
-    if request.method == 'POST':
-        codigo1 = request.form['code1']
-        codigo2 = request.form['code2']
-        codigo3 = request.form['code3']
-        codigo4 = request.form['code4']
-        codigo = codigo1 + codigo2 + codigo3 + codigo4
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session.get('idgenuine'),))
-        codigov = cur.fetchone()
-        cur.close()
-        if codigov is not None:
-            if codigo == codigov[2]:
-                idgenuine = session['idgenuine']
-                cur = mysql.connection.cursor()
-                cur.execute("UPDATE verificacion SET verificado = %s WHERE idusuario = %s", ("SI", idgenuine))
-                mysql.connection.commit()
-                cur.close()
-                session['verificado'] = "SI"
-
-                return redirect(url_for('index'))
-            else:
-                return render_template('auth/verificacion.html', error='Código incorrecto', codigo = '', codigo1 = '', codigo2 = '', codigo3 = '', codigo4 = '')
-    else:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session.get('idgenuine'),))
-        code = cur.fetchone()
-        cur.close()
-        if code is None or code[2] is None:
-            return render_template('auth/verificacion.html', error='No se encontró ningún código')
+    try:
+        if 'realizadoverificacion' in session and session['realizadoverificacion']:
+             return redirect(url_for('index'))
+        if request.method == 'POST':
+            codigo1 = request.form['code1']
+            codigo2 = request.form['code2']
+            codigo3 = request.form['code3']
+            codigo4 = request.form['code4']
+            codigo = codigo1 + codigo2 + codigo3 + codigo4
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session.get('idgenuine'),))
+            codigov = cur.fetchone()
+            cur.close()
+            if codigov is not None:
+                if codigo == codigov[2]:
+                    idgenuine = session['idgenuine']
+                    cur = mysql.connection.cursor()
+                    cur.execute("UPDATE verificacion SET verificado = %s WHERE idusuario = %s", ("SI", idgenuine))
+                    mysql.connection.commit()
+                    cur.close()
+                    session['verificado'] = "SI"
+                    session['realizadoverificacion'] = True
+                    return redirect(url_for('datos'))
+                else:
+                    return render_template('auth/verificacion.html', error='Código incorrecto', codigo='', codigo1='', codigo2='', codigo3='', codigo4='')
         else:
-            destinatario = session.get('usuario')
-            asunto = 'Tu código de verificación Genuine'
-            contenido = 'Aquí está tu código de verificación de Genuine: {}'
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM verificacion WHERE idusuario = %s ", (session.get('idgenuine'),))
+            code = cur.fetchone()
+            cur.close()
+            if code is None or code[2] is None:
+                return render_template('auth/verificacion.html', error='No se encontró ningún código')
+            else:
+                destinatario = session.get('usuario')
+                asunto = 'Tu código de verificación Genuine'
+                contenido = 'Aquí está tu código de verificación de Genuine: {}'
 
-            # Verificar si ya se envió un código de verificación antes
-            if 'codigo_enviado' not in session:
-                enviar_correo(destinatario, asunto, contenido.format(code[2]))
-                session['codigo_enviado'] = True  # Establecer la bandera de código enviado
+                # Verificar si ya se envió un código de verificación antes
+                if 'codigo_enviado' not in session:
+                    enviar_correo(destinatario, asunto, contenido.format(code[2]))
+                    session['codigo_enviado'] = True  # Establecer la bandera de código enviado
 
-        return render_template('auth/verificacion.html')
+            return render_template('auth/verificacion.html')
 
-    return redirect(url_for('index'))
+        return redirect(url_for('datos'))
+
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+
 
 
 
@@ -457,10 +591,13 @@ def salir():
     session.clear()
     return redirect(url_for('home'))
 # Ruta principal, chat
+
+
 @app.route('/')
 def index():
-    email_usuario = session.get('idgenuine')
-    return render_template('chat.html')
+    nombre = session['nombre']
+    principal_mensaje = f"Hola {nombre}, estoy aquí para ayudarte. que deseas hoy?"
+    return render_template('chat.html', bienvenida = principal_mensaje)
 
 
 
@@ -498,6 +635,23 @@ def read_pdf():
 
 
 
+# Convertir texto a voz utilizando pyttsx3
+def convertir_texto_a_voz(response):
+    idusuario = session['idgenuine']
+    engine = pyttsx3.init()
+
+    engine.save_to_file(response, 'respuesta.wav')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM preferencias WHERE idusuario = %s", (idusuario,))
+    speak = cur.fetchone()
+    if speak is not None:
+        hablar = speak[1]
+        session['hablar'] = hablar
+        if session['hablar'] == "TRUE":
+            engine.say(response)
+            engine.runAndWait()
+
+
 
 
 
@@ -528,7 +682,7 @@ def get_response():
         # Obtener respuesta del modelo GPT-3
         try:
             response = obtener_respuesta_gpt3(mensaje, key=key)
-
+            convertir_texto_a_voz(response)
             return response
 
         except openai.error.AuthenticationError:
@@ -540,6 +694,11 @@ def get_response():
         except Exception as e:
             mensaje_error = 'Ha ocurrido un error: ' + str(e)
             return mensaje_error
+        
+# Ruta para manejar errores 404
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html')
         
 
 

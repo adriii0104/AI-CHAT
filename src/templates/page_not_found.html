@@ -1,0 +1,22 @@
+{% extends 'plantillas/base.html' %}
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+
+<style>
+    #notfound{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    #notfound .notfound-text{
+        font-size: 2.55em;
+        text-align: center;
+    }
+</style>
+
+<div id="notfound">
+    <img src="{{ url_for('static', filename='IMGS/404.png') }}" alt="404, pagina no encontrada." width="400"><br><br>
+    <p class="notfound-text">Opps. Page not found.</p>
+</div>
+{% endblock %}

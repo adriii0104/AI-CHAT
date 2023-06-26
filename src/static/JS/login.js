@@ -1,17 +1,12 @@
-function togglePasswordVisibility() {
-    var contraseñaInput = document.getElementById("contraseña");
-    var iconoOjos = document.querySelectorAll(".fi-sr-eye");
-  
-    if (contraseñaInput.type === "password") {
-      contraseñaInput.type = "text";
-      iconoOjos[0].classList.remove("fi-sr-eye");
-      iconoOjos[0].classList.add("fi-sr-eye-crossed");
-    } else {
-      contraseñaInput.type = "password";
-      iconoOjos[0].classList.remove("fi-sr-eye-crossed");
-      iconoOjos[0].classList.add("fi-sr-eye");
-    }
-  }
+function check() {
+  var check = document.getElementById("checkbox");
+  if (check.checked) {
+    document.getElementById("contraseña").type = "text";
+      } else {
+        document.getElementById("contraseña").type = "password";
+}
+}
+
 function validate() {
   let email = document.getElementById("email").value;
   let password = document.getElementById("contraseña").value;
@@ -25,7 +20,6 @@ function validate() {
   button.style.color = isFormValid ? "black" : "#969696b0";
   button.style.backgroundColor = isFormValid ? "white" : "#96969631";
   button.style.cursor = isFormValid ? "pointer" : "default";
-  console.log(isFormValid ? "button enabled" : "button disabled");
   
 }  
 document.getElementById('button').addEventListener('click', function() {

@@ -22,7 +22,7 @@
       </a>
     </div>
 
-    <p>Create account <img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
+    <p>Create account <img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p>
     <div id="altern-log">
       <p>Register with</p><br>
       <i class="fi fi-brands-apple"></i>
@@ -30,7 +30,7 @@
       <i class="fi fi-brands-facebook"></i>
       <i class="fi fi-brands-github"></i>
       <i class="fi fi-brands-microsoft"></i>
-    </div><br><br><br>
+    </div><br>
 
     <div id="text-indication">
       <p style="font-size: 0.95em; border-bottom: 1px solid #80808052;">Or register with email</p>
@@ -55,34 +55,30 @@
   
   
   </ul>
-    </div><br>
+    </div>
 
     <form method="post" onsubmit="return check()">
       <div class="user-box">
         <input type="text" id="nombre" oninput="validate()" name="nombre"  placeholder="Jane" autocomplete="off" required>
-        <label>Name</label>
+        <label for="nombre">Name</label>
       </div><br>
       <div class="user-box">
-        <input type="text" id="nombre" oninput="validate()" name="apellido"  placeholder="Doe" autocomplete="off" required>
-        <label>Last name</label>
+        <input type="text" id="apellido" oninput="validate()" name="apellido"  placeholder="Doe" autocomplete="off" required>
+        <label for="apellido">Last name</label>
       </div><br>
       <div class="user-box">
         <input type="text" id="email" oninput="validate()" name="email" placeholder="janedoe@genuine.com" autocomplete="off" required>
-        <label>Email</label>
+        <label for="email">Email</label>
 
 
       </div><br>
       <div class="user-box">
         <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="new-password" required>
-        <label>Password</label>
-      </div><br>
-      <div class="user-box">
-        <input type="password" id="ccontraseña" oninput="validate()" autocomplete="off" required>
-        <label>Confirm password</label>
+        <label for="contraseña">Password</label>
       </div><br>
       <div class="user-box">
         <input type="text" id="api" name="openai" oninput="validate()" placeholder="sk-xxxxxxxxxxxx" autocomplete="off" required>
-        <label>Api OpenAi</label>
+        <label for="api">Api OpenAi</label>
       </div>
       <br>
 

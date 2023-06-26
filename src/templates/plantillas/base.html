@@ -44,15 +44,20 @@
     <title>{% block title %} {% endblock %}</title>
 </head>
 <style id="page-style"></style>
+<style>
+    .active {
+        color: #2f81f7 !important;
+}
+</style>
 <body>
     <header>
         <nav class="navigation">
-            <a href="{{ url_for ('home') }}">Home</a>
+            <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
             <a target="_blank" href="https://github.com/adriii0104">GitHub <i class="fi fi-brands-github"></i></a>
             <a target="_blank" href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">LinkedIn <i class="fi fi-brands-linkedin"></i></a>
             <a href="">Contact<i class="fi fi-rs-angle-small-down"></i></a>
-            <a href="">How to view api <i class="fi fi-rs-angle-small-down"></i></a>
-            <a class="loguer" href="{{ url_for ('login') }}">Log in</a>
+            <a href="">How to view API <i class="fi fi-rs-angle-small-down"></i></a>
+            <a class="loguer" href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Log in</a>            
 
             <div id="night-day">
             <input type="checkbox" id="mode-switch" class="styled-checkbox" onchange="toggleMode()">
@@ -76,7 +81,16 @@
                 pageStyle.innerHTML = "body { background-color: rgba(0, 0, 0, 0.93) !important ;color: white !important; } a { color: white !important} i{ color: white !important}";
             }
         }
+        // Obtén la URL de la página actual
+const urlActual = window.location.href;
 
+// Obtén el elemento del enlace "Home" por su ID
+const enlaceHome = document.getElementById('home');
+
+// Comprueba si la URL actual coincide con la URL del enlace "Home"
+if (urlActual.includes('home.html')) {
+  enlaceHome.classList.add('active'); // Agrega la clase "active" al enlace "Home"
+}
     </script>
 </body>
 {% block body %}
