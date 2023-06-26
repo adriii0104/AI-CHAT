@@ -56,23 +56,6 @@ a{
     margin-left: 40px;
     transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
 }
-
-
-.navigation a:nth-child(6){
-    background-color: rgb(255, 255, 255);
-    padding: 15px 25px;
-    border-radius: 5pt;
-    transition: all 0.5s !important;
-    color: #000000 !important;
-}
-.navigation a:nth-child(5):hover{
-    background-color: rgb(39, 39, 39);
-    color: #2f81f7 !important;
-}
-.navigation a:nth-child(6):hover{
-    background-color: rgb(112, 112, 112);
-    color: #2f81f7 !important;
-}
 a:hover{
     color: #2f81f7 !important;
 }

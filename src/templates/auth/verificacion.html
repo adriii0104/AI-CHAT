@@ -22,8 +22,8 @@
     <p><img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
     <div id="altern-log">
       <p style="pointer-events: none !important;">
-        Te hemos enviado un código a {{ session['usuario'] }}. <br>
-        Por favor, tan pronto como lo recibas, escríbelo.
+        We have sent you a code to: <span style="color: #2f81f7 !important; border-bottom: 1px solid #2f81f7"> {{ session['emailoculto'] }}.</span> <br><br>
+        Please, as soon as you receive it, write it down.
       </p>
       {% if error %}
       <div id="error" style="pointer-events: none;">{{ error }}</div>

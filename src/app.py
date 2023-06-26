@@ -69,51 +69,49 @@ def guardar_contexto(contexto):
 
 
 
-# Obtener respuesta utilizando la API de OpenAI
 def obtener_respuesta_gpt3(pregunta, key):
-    if 'nombre' in session:
-        openai.api_key = key
-        contexto = cargar_contexto()
-        contexto['pregunta'] = pregunta
-        guardar_contexto(contexto)
-        
-        nombre_usuario = session['nombre']
-        email_usuario = session['usuario']
-        apellido_usuario = session['apellido']
-        anos = session['anos']
-        anonacimiento = session['AAAA']
-        mesnacimiento = session['MM']
-        dianacimiento = session['DD']
+    # Obtener los datos del usuario
+    nombre_usuario = session['nombre']
+    apellido_usuario = session['apellido']
+    edad_usuario = session['anos']
+    ano_nacimiento_usuario = session['AAAA']
+    mes_nacimiento_usuario = session['MM']
+    dia_nacimiento_usuario = session['DD']
+    email_usuario = session['usuario']
+    preferenciasexual = session['gender']
 
 
 
-        datosusuario = f'"(Estos son los datos del usuario, no muestres ni respondas con los datos, a menos que el te lo pida. pero responde todas las preguntas que te hagan.): ", "apellido del usuario:" {apellido_usuario}, "edad del usuario:" {anos}, "ano de nacimiento del usuario:"{anonacimiento}, "mes de nacimiento del usuario"{mesnacimiento}, "dia de nacimiento del usuario"{dianacimiento}, "email del usuario:"{email_usuario}"'
+    entrada = f"""
+    (Estos son los datos del usuario, no muestres ni respondas con los datos, a menos que el te lo pida. 
+    Pero responde todas las preguntas que te hagan.):
 
-        
-        entrada = f'{datosusuario}"nombre"{nombre_usuario}: {pregunta}'
-        tokens_entrada = nltk.word_tokenize(entrada)
-        
-        # Eliminar líneas que comienzan con "Usuario:" y "Bot:"
-        codigo_limpio = [linea for linea in tokens_entrada if not linea.startswith(('Usuario:', 'Bot:'))]
-        
-        # Unir las líneas de código en un solo bloque de texto
-        codigo_completo = '\n'.join(codigo_limpio)
-        
-        # Obtener la respuesta del modelo
-        respuesta = openai.Completion.create(
-            engine='text-davinci-003',
-            prompt=codigo_completo,
-            max_tokens=1500,
-            n=1,
-            stop=None,
-            temperature=0.4
-        )
-        
+    - Nombre del usuario: {nombre_usuario}
+    - Apellido del usuario: {apellido_usuario}
+    - Edad del usuario: {edad_usuario}
+    - Año de nacimiento del usuario: {ano_nacimiento_usuario}
+    - Mes de nacimiento del usuario: {mes_nacimiento_usuario}
+    - Día de nacimiento del usuario: {dia_nacimiento_usuario}
+    - Email del usuario: {email_usuario}
+    - Preferencia sexual del usuario: {preferenciasexual}
 
-        nueva_respuesta = respuesta.choices[0].text.strip()
-        
 
-        return nueva_respuesta
+    Usuario: {nombre_usuario}: {pregunta}
+    """
+
+    openai.api_key = key
+    respuesta = openai.Completion.create(
+        engine='text-davinci-003',
+        prompt=entrada,
+        max_tokens=1500,
+        n=1,
+        stop=None,
+        temperature=0.4
+    )
+
+    nueva_respuesta = respuesta.choices[0].text.strip()
+
+    return nueva_respuesta
 
 
 
@@ -403,6 +401,7 @@ def login():
             cur.execute("SELECT * FROM usuarios WHERE email = %s ", (usuario,))
             user = cur.fetchone()
             cur.close()
+            print(usuario)
 
             if user is not None:
                 print("el usuario se encontro en la base de datos")
@@ -438,7 +437,7 @@ def login():
                                     del failed_login_attempts[ip]
                                 session['logued'] = True
                                 cur1 = mysql.connection.cursor()
-                                cur1.execute("SELECT * FROM datos WHERE idusuario = %s", (session['idgenuine'],))
+                                cur1.execute("SELECT * FROM datos WHERE idusuarios = %s", (session['idgenuine'],))
                                 datos = cur1.fetchone()
                                 cur1.close()
                                 session['anos'] = datos[1]
@@ -470,9 +469,11 @@ def login():
                     if failed_login_attempts[ip] >= 4:
                         tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
                         blocked_ips[ip] = tiempo_desbloqueo
-                    print("Verificacion se encontro")
+
+                    print("la contrasena no coincide")
                     return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
             else:
+                print("la contrasena no coincide")
                 return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
         except Exception as e:
             traceback.print_exc()
@@ -533,12 +534,17 @@ def verificacion():
                     enviar_correo(destinatario, asunto, contenido.format(code[2]))
                     session['codigo_enviado'] = True  # Establecer la bandera de código enviado
 
+            emailfilter = session['usuario']
+            emailfiltrado, dominioemail = emailfilter.split("@")
+            emailoculto = emailfiltrado[:3] + '*' * (len(emailfiltrado)-3)
+            emailmostrar = emailoculto + '@' + dominioemail
+            session['emailoculto'] = emailmostrar
             return render_template('auth/verificacion.html')
 
         return redirect(url_for('datos'))
 
     except Exception as e:
-        return render_template('error.html', error=str(e))
+        return render_template('auth/verificacion.html', error=str(e))
 
 
 
@@ -549,7 +555,7 @@ def verificacion():
 @app.route('/auth/verificacion/resend')
 def resend():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM verificacion WHERE idblid = %s", (session.get('idgenuine'),))
+    cur.execute("SELECT * FROM verificacion WHERE idusuario = %s", (session.get('idgenuine'),))
     code = cur.fetchone()
     cur.close()
 
@@ -642,7 +648,7 @@ def convertir_texto_a_voz(response):
 
     engine.save_to_file(response, 'respuesta.wav')
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM preferencias WHERE idusuario = %s", (idusuario,))
+    cur.execute("SELECT * FROM preferencias WHERE idusuarios = %s", (idusuario,))
     speak = cur.fetchone()
     if speak is not None:
         hablar = speak[1]

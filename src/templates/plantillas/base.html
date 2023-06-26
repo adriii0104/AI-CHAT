@@ -57,7 +57,8 @@
             <a target="_blank" href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">LinkedIn <i class="fi fi-brands-linkedin"></i></a>
             <a href="">Contact<i class="fi fi-rs-angle-small-down"></i></a>
             <a href="">How to view API <i class="fi fi-rs-angle-small-down"></i></a>
-            <a class="loguer" href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Log in</a>            
+            {% block a %}
+            {% endblock %}         
 
             <div id="night-day">
             <input type="checkbox" id="mode-switch" class="styled-checkbox" onchange="toggleMode()">

@@ -21,6 +21,9 @@ body {
     left: 44.5%;
     transform: translate(-50%, -50%);
 }
+#principal p:nth-child(2){
+    color: #2f81f7 !important;
+}
 #principal h4{
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     font-size: 1.25em;
@@ -36,7 +39,7 @@ body {
     font-weight: 500;
 }
 #principal button:hover{
-    color: #ffff;
+    color: #2f81f7 !important;
     background: rgb(22, 22, 22);
     cursor: pointer;
 }
@@ -52,11 +55,12 @@ body {
     justify-items: center;
     align-items: center;
     border-radius: 7pt;
+    border: 0.5px solid #424242;
 }
 #txt p{
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     font-size: 1.05em;
-    color: #d6d6d6 !important;
+    color: #2f81f7 !important;
     text-align: center;
     font-weight: lighter;
     text-align: center;
@@ -136,12 +140,26 @@ body {
     font-size: 0.70em;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: #2f81f7 !important;
   }
   
  .copyright p{
-    color: #686868 !important;
+    color: #2f81f7 !important;
     margin-top: -25px;
+    font-weight: bold;
 }
 .copyright i{
-    color: #686868 !important;
+    color: #2f81f7 !important;
+    
 }
+a:nth-child(6){
+    margin-left: 425px !important;
+    background: #ffffff;
+    color: black !important;
+    padding: 12px 22px;
+    border-radius: 4pt;
+  }
+  a:nth-child(6):hover{
+    color: #2f81f7 !important;
+  }

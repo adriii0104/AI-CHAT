@@ -1,5 +1,34 @@
 # IA-Chat
 
+Update V1.2;
+In this update, Genuine has learned to take into consideration and also remember relevant things about the person in order to provide a better service according to people's needs.
+
+Added preference options so that users can choose whether they want the bot to speak, write, or both.
+
+2Factor authentication added.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------NON IMPORTANT---------------------------------------------------------------------------
 
 This is an AI bot based on intelligence API, with enhancements and aptitudes for greater human understanding.
 

@@ -1,8 +1,14 @@
 {% extends './plantillas/base.html' %}
 
-{% block href %} Login {% endblock %}
+{% block title %} Login {% endblock %}
 
 {% block body %}
+
+{% block a %}
+<a href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Login</a>
+<a href="{{ url_for('register') }}" {% if request.path == url_for('register') %}class="active"{% endif %}>Register</a>
+{% endblock %}        
+
 <head>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth_login.css') }}">
   <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
@@ -12,10 +18,9 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <style>
-  
-  .navigation a:nth-child(6) {
-    display: none;
-    }
+      .active {
+        color: #2f81f7 !important;
+}
 </style>
 
 
@@ -32,7 +37,7 @@
       </a>
     </div>
 
-    <p>Log in your account <img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br><br>
+    <p>Log in your account </p><br><br><br>
     <div id="altern-log">
       <p>Sign in with</p><br>
       <i class="fi fi-brands-apple"></i>

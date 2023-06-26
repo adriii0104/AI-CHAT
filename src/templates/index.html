@@ -3,6 +3,9 @@
 {% block title %}Home {% endblock %}
 
 {% block body %}
+{% block a %}
+<a class="loguer" href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Log in</a>
+{% endblock %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
     <style>

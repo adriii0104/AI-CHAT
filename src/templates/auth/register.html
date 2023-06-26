@@ -3,6 +3,19 @@
 {% block href %} Login {% endblock %}
 
 {% block body %}
+
+<style>
+      .active {
+        color: #2f81f7 !important;
+}
+</style>
+
+
+{% block a %}
+<a href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Login</a>
+<a href="{{ url_for('register') }}" {% if request.path == url_for('register') %}class="active"{% endif %}>Register</a>
+{% endblock %}
+
 <head>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/auth_register.css') }}">
   <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
@@ -22,7 +35,7 @@
       </a>
     </div>
 
-    <p>Create account <img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p>
+    <p>Create account </p>
     <div id="altern-log">
       <p>Register with</p><br>
       <i class="fi fi-brands-apple"></i>

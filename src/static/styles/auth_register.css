@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'SF Pro Display', sans-serif;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     color: white;
 }
 
@@ -26,7 +26,7 @@ body {
     flex-direction: column;
     align-items: center;
     border-radius: 4pt;
-    font-family:'Poppins', sans-serif !important;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
 }
 
 #altern-log i {
@@ -45,12 +45,12 @@ body {
     padding-left: 7px;
     cursor: auto;
     letter-spacing: 0.16em;
-    font-family:'Poppins', sans-serif !important;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     background: transparent;
 }
 .content .user-box {
     width: 120%;
-    font-family:'Poppins', sans-serif !important;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
 }
 
 .content button {
@@ -61,7 +61,7 @@ body {
     border-color: #0000;
     border-radius: 3pt;
     font-size: 0.9em;
-    font-family:'Poppins', sans-serif !important;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
 }
 .user-box{
     position: relative;
@@ -112,8 +112,8 @@ outline: none;
 
 .content .close {
     color: white !important;
-    margin-left: 135%;
-    margin-top: -19.9%;
+    margin-left: 134.4%;
+    margin-top: -21.2%;
     font-size: 2.5em;
     text-align: center;
     width: 50px;
@@ -200,4 +200,9 @@ outline: none;
       transform: rotate(360deg);
     }
   }
-  
+  a:nth-child(6){
+    margin-left: 425px !important;
+  }
+  .navigation a{
+    letter-spacing: none !important;
+  }

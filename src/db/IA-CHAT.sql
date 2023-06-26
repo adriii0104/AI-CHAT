@@ -2,14 +2,14 @@
 # aqui almacenaremos los datos del usario, poniendo un ID principal y un idusuario.
 CREATE TABLE `genuineai`.`usuarios` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idusuarios` VARCHAR(45) NULL,
-  `name` VARCHAR(45) NULL,
-  `last-name` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
-  `api` VARCHAR(45) NULL,
-  `fecha` VARCHAR(45) NULL,
-  `datos` VARCHAR(45) NULL,
+  `idusuarios` VARCHAR(255) NULL,
+  `name` VARCHAR(255) NULL,
+  `last-name` VARCHAR(255) NULL,
+  `email` VARCHAR(255) NULL,
+  `password` VARCHAR(255) NULL,
+  `api` VARCHAR(255) NULL,
+  `fecha` VARCHAR(255) NULL,
+  `datos` VARCHAR(255) NULL,
   PRIMARY KEY (`id`));
 
 
