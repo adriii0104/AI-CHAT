@@ -1,0 +1,121 @@
+{% extends './plantillas/plantilla-chat.html' %}
+{% block title %}2-factor{% endblock %}
+{% block chat %}
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/verificacion.css') }}">
+  <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+</head>
+<style>
+  .user-box .code-input{
+    position: fixed;
+    top: 59%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+
+<div class="content">
+  <div class="log-in-card">
+    <div class="close">
+      <a href="{{ url_for('home') }}">
+        <i class="fi fi-ss-rectangle-xmark"></i>
+      </a>
+    </div>
+    <p><img src="{{ url_for('static', filename='IMGS/2-removebg-preview (1).png') }}" alt="" width="45px"></p><br><br>
+    <div id="altern-log">
+      <p style="pointer-events: none !important;">
+        The 2-factor authentication code has been sent to: <span style="color: #2f81f7 !important; border-bottom: 1px solid #2f81f7"> {{ session['emailoculto'] }}.</span> <br><br>
+        Please, as soon as you receive it, write it down.
+      </p>
+      {% if error %}
+      <div id="error" style="pointer-events: none;">{{ error }}</div>
+      {% endif %}
+    </div><br><br><br><br>
+
+    <div id="text-indication">
+      <a href="{{ url_for ('resend') }}">
+        <p class="log">Resend code</p>
+      </a>
+    </div>
+
+    <form id="verification-form" method="post" >
+      <div class="user-box">
+        <div class="code-input">
+          <input type="text" id="input1" name="code1" oninput="checkLengthAndFocus(this, 1)" class="digit-input" maxlength="1" required>
+          <input type="text" id="input2" name="code2" oninput="checkLengthAndFocus(this, 2)" class="digit-input" maxlength="1" required>
+          <input type="text" id="input3" name="code3" oninput="checkLengthAndFocus(this, 3)" class="digit-input" maxlength="1" required>
+          <input type="text" id="input4" name="code4" oninput="checkLengthAndFocus(this, 4)" class="digit-input" maxlength="1" required>
+        </div><br>
+        <br><br><br><br><br>
+      </div>
+      <div class="reminder">
+        <input type="checkbox" name="reminderdevice" style="width: 45px !important;">
+        <label>Reminder this device</label>
+      </div>
+      <div class="user-button">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+  </div><br><br><br><br><br><br>
+  <p style="font-size: 0.65em; color: rgba(150, 150, 150, 0.603);">ID: {{ session['idgenuine' ]}}</p>
+</div>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let digits = document.getElementsByClassName("digit-input");
+
+    Array.from(digits).forEach((digit, index) => {
+      digit.addEventListener("input", function() {
+        checkLengthAndFocus(this, index + 2);
+        validate();
+      });
+    });
+  });
+
+  window.onload = function () {
+    let firstInput = document.getElementById("input1");
+    firstInput.focus();
+  };
+
+  function checkLengthAndFocus(input, nextInputIndex) {
+  const maxLength = parseInt(input.getAttribute("maxlength"));
+  const currentValue = input.value;
+
+  if (currentValue.length >= maxLength) {
+    if (nextInputIndex <= 4) {
+      const nextInput = document.getElementById("input" + nextInputIndex);
+      nextInput.focus();
+    }
+  } else {
+
+  }
+}
+
+function handleBackspace(event, input, previousInput) {
+  if (event.key === "Backspace" && input.value === "") {
+    previousInput.focus();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  let digits = document.getElementsByClassName("digit-input");
+
+  Array.from(digits).forEach((digit, index) => {
+    const previousInput = index > 0 ? digits[index - 1] : null;
+
+    digit.addEventListener("input", function () {
+      checkLengthAndFocus(this, index + 2);
+      validate();
+    });
+
+    digit.addEventListener("keydown", function (event) {
+      handleBackspace(event, this, previousInput);
+    });
+  });
+});
+</script>
+
+</body>
+{% endblock %}

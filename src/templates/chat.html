@@ -1,13 +1,12 @@
 
 {% extends 'plantillas/plantilla-chat.html' %}
-
+{% block title %}GenuineChat - Chat{% endblock %}
     {% block chat %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
-    <title>Genuine</title>
 </head>
 
     <div id="chat-window">

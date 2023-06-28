@@ -3,25 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <style>
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        .typing-animation {
-            animation: typing 1s linear;
-        }
-
-        .listening {
-            color: red;
-        }
-        .active {
-        color: #2f81f7 !important;
-}
-    </style>
-
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/plantilla.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,6 +25,7 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-thin-rounded/css/uicons-thin-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <title>{% block title %}GenuineChat{% endblock %}</title>
 </head>
 <body>
     <header>

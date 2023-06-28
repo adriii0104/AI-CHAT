@@ -37,3 +37,10 @@ CREATE TABLE `IA`.`verificacion` (
   `dia` VARCHAR(45) NULL,
   `genero` VARCHAR(45) NULL,
   PRIMARY KEY (`idusuarios`));
+  
+  #ip permitidas
+  CREATE TABLE `genuineai`.`ip_access` (
+  `idusuarios` VARCHAR(255) NOT NULL,
+  `ip_access` VARCHAR(45) NULL,
+  PRIMARY KEY (`idusuarios`));
+

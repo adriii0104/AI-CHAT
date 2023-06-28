@@ -225,3 +225,23 @@ outline: none;
   .code-input input{
     caret-color: transparent;
   }
+  .reminder label{
+    color: rgba(150, 150, 150, 0.69) !important;
+    margin-left: -15px;
+    font-size: 0.95em;
+  }
+  .user-button{
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+
+  }
+  .user-button input{
+    color: black;
+    background-color: white;
+    padding: 14px 185px;
+    border: none;
+    border-radius: 5pt;
+    cursor: pointer;
+  }

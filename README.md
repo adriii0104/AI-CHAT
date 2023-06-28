@@ -1,5 +1,17 @@
 # IA-Chat
 
+
+Update V1.3:
+In this update, I have added the function to memorize the IP address to remember the logged-in session.
+
+Bugs fixed.
+
+
+
+
+
+
+
 Update V1.2;
 In this update, Genuine has learned to take into consideration and also remember relevant things about the person in order to provide a better service according to people's needs.
 

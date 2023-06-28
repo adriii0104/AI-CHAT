@@ -239,3 +239,24 @@ a:hover{
         max-height: 11%;
     }
   }
+  title{
+    display: block !important;
+  }
+  title{
+    display: block !important;
+}
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.typing-animation {
+    animation: typing 1s linear;
+}
+
+.listening {
+    color: red;
+}
+.active {
+color: #2f81f7 !important;
+}
