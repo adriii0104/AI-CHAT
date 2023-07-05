@@ -1,15 +1,15 @@
 function check() {
   var check = document.getElementById("checkbox");
   if (check.checked) {
-    document.getElementById("contraseña").type = "text";
+    document.getElementById("password").type = "text";
       } else {
-        document.getElementById("contraseña").type = "password";
+        document.getElementById("password").type = "password";
 }
 }
 
 function validate() {
   let email = document.getElementById("email").value;
-  let password = document.getElementById("contraseña").value;
+  let password = document.getElementById("password").value;
   var button = document.getElementById("button");
   let emailvalid = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 

@@ -40,6 +40,7 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-thin-rounded/css/uicons-thin-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-straight/css/uicons-bold-straight.css'>
     <title>{% block title %}GenuineChat{% endblock %}</title>
 </head>
 <style id="page-style"></style>
@@ -59,8 +60,10 @@
             <a target="_blank" href="https://www.linkedin.com/in/adriel-capell%C3%A1n-d%C3%ADaz-b48bb5259/">LinkedIn <i class="fi fi-brands-linkedin"></i></a>
             <a href="">Contact<i class="fi fi-rs-angle-small-down"></i></a>
             <a href="">How to view API <i class="fi fi-rs-angle-small-down"></i></a>
+            <div>
             {% block a %}
-            {% endblock %}         
+            {% endblock %}    
+        </div>     
 
             <div id="night-day">
             <input type="checkbox" id="mode-switch" class="styled-checkbox" onchange="toggleMode()">

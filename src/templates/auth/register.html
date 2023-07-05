@@ -12,8 +12,7 @@
 
 
 {% block a %}
-<a href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Login</a>
-<a href="{{ url_for('register') }}" {% if request.path == url_for('register') %}class="active"{% endif %}>Register</a>
+<a class="loguer" href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Login</a>
 {% endblock %}
 
 <head>
@@ -31,7 +30,7 @@
   <div class="log-in-card">
     <div class="close">
       <a href="{{ url_for('home') }}">
-        <i class="fi fi-ss-rectangle-xmark"></i>
+        <i class="fi fi-bs-power"></i>
       </a>
     </div>
 
@@ -48,7 +47,7 @@
     <div id="text-indication">
       <p style="font-size: 0.95em; border-bottom: 1px solid #80808052;">Or register with email</p>
       <p class="error-email" id="error-email"></p>
-      <ul class="flash-messages">
+      <ul class="flash-messages" style="list-style: none;">
         {% with messages = get_flashed_messages() %}
     {% if messages %}
   
@@ -72,42 +71,38 @@
 
     <form method="post" onsubmit="return check()">
       <div class="user-box">
-        <input type="text" id="nombre" oninput="validate()" name="nombre"  placeholder="Jane" autocomplete="off" required>
-        <label for="nombre">Name</label>
-      </div><br>
+        <input type="text" name="name" id="name" class="name" placeholder="Jane" autocomplete="off" required>
+        <label for="name">Name</label>
+      </div>
+
       <div class="user-box">
-        <input type="text" id="apellido" oninput="validate()" name="apellido"  placeholder="Doe" autocomplete="off" required>
-        <label for="apellido">Last name</label>
-      </div><br>
+        <input type="text" name="last_name" id="last_name" placeholder="Doe" autocomplete="off" required>
+        <label for="last_name">Last name</label>
+      </div>
+
       <div class="user-box">
         <input type="text" id="email" oninput="validate()" name="email" placeholder="janedoe@genuine.com" autocomplete="off" required>
         <label for="email">Email</label>
-
-
-      </div><br>
+      </div>
       <div class="user-box">
         <input type="password" id="contraseña" oninput="validate()" name="contraseña"  autocomplete="new-password" required>
         <label for="contraseña">Password</label>
-      </div><br>
+      </div>
+
       <div class="user-box">
         <input type="text" id="api" name="openai" oninput="validate()" placeholder="sk-xxxxxxxxxxxx" autocomplete="off" required>
         <label for="api">Api OpenAi</label>
-      </div>
-      <br>
+      </div><br>
 
       <div class="terms-and-conditions">
         <div class="field">
-          <input type="checkbox" id="terms" required>
-          <label for="terms">
+          <input type="checkbox" id="check">
+          <label for="check" style="font-size: 13px;">
             Agree to <span> Terms and Conditions & Privacy Policy</span>
-          </label><br><br>
-          <input type="checkbox" id="terms1" required>
-          <label for="terms1">
-            Agree to <span> Terms and Conditions </span> from chat user.
           </label>
         </div><br>
         <p id="errorregister" class="error"></p>
-      </div><br>
+      </div>
       <button class="i-button-register" id="button" disabled="true">Register</button><br><br>
       <div id="spinnerContainer"></div>
     </form>

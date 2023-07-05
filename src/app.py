@@ -3,12 +3,12 @@ import random
 import string
 import spacy
 import pyttsx3
-from flask import Flask, render_template, request, url_for, redirect, session, flash, send_file
+from flask import Flask, render_template, request, url_for, redirect, session, flash, send_file, make_response
 import openai
 from flask_mysqldb import MySQL
 from config import SECRET, HOSTNAME, USER, PASSWORD, DATABASE
 from utils.verificacion import enviar_correo
-from datetime import datetime, timedelta
+from datetime import datetime
 from PyPDF2 import PdfReader, PdfWriter
 from docx import Document
 import traceback
@@ -16,7 +16,8 @@ import hashlib
 import uuid
 from manejoerrores import error100
 from datetime import date
-from utils.extraccion import obtener_ip_publica
+from utils.extraccion import cookie100
+from utils.encrypt import encrypt_information, decrypt_information
 
 
 app = Flask(__name__)
@@ -65,11 +66,10 @@ def guardar_contexto(contexto):
 
 
 
-
+#usaremos esta funcion para manejar las respuetas.
 def obtener_respuesta_gpt3(pregunta, key):
     conversaciones = session.get('conversaciones', [])
     contexto_conversacion = "\n".join(conversaciones)
-    print(contexto_conversacion)
 
     entrada = f"""
     (These are the user's data. Please do not display or respond with the data unless the user requests it. However,
@@ -107,9 +107,14 @@ def obtener_respuesta_gpt3(pregunta, key):
     conversaciones.append(f"Usuario: {session.get('nombre')}: {pregunta}")
     conversaciones.append(nueva_respuesta)
     session['conversaciones'] = conversaciones
+    if len(conversaciones) > 10:
+        session['conversaciones'] = []
+        conversaciones = []
 
-    nueva_respuesta.replace("Respuesta:", " ")
+    print(conversaciones)
+    print(len(conversaciones))
     return nueva_respuesta
+
 
 
 
@@ -131,9 +136,6 @@ def work_pdf():
 
     # Generar el enlace de descarga
     download_link = url_for('download_file', filename=temp_file)
-
-    # Redirigir al cliente a la ruta de descarga
-    print(download_link)
 
 
 
@@ -240,12 +242,13 @@ def datos():
 #----------------------------------------------------------------Apartir de esta line usaremos las funciones de registro-------------------------------------------------------
 @app.route('/auth/register', methods=["POST", "GET"])
 def register():
+    redirect_cookie_auth()
     try:
         redirigir_en_caso_existir_session()
         if request.method == "POST":
             id_usuario = str(uuid.uuid4())
-            nombre = request.form.get('nombre')
-            apellido = request.form.get('apellido')
+            nombre = request.form.get('name')
+            apellido = request.form.get('last_name')
             email = request.form.get('email')
             password = request.form.get('contraseña')
             hashpassword = hashlib.sha256()
@@ -271,10 +274,10 @@ def register():
                 )
             except openai.error.AuthenticationError:
                 return render_template('auth/register.html', error="La API ingresada es incorrecta",
-                                       nombre='', email='', contraseña='', openai='')
+                                       email='', contraseña='', openai='')
             except Exception as e:
                 return render_template('auth/register.html', error="Error al verificar la API: " + str(e),
-                                       nombre='', email='', contraseña='', openai='')
+                                    email='', contraseña='', openai='')
             if user is None:
                 cur1 = mysql.connection.cursor()
                 cur1.execute("INSERT INTO verificacion VALUES (%s, %s, %s, %s)",
@@ -284,7 +287,6 @@ def register():
                 cur2 = mysql.connection.cursor()
                 cur2.execute("INSERT INTO usuarios VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                              (code, id_usuario, nombre, apellido, email, hash_value, api, datetime.now(), reason))
-                print(hash_value)
                 cur2.close()
                 cur3 = mysql.connection.cursor()
                 cur3.execute("INSERT INTO preferencias VALUES (%s, %s, %s)",
@@ -314,109 +316,139 @@ def register():
 
 
 
-
-
-
 #--------------------------------------------------Fin de funciones de seguridad de Registro-------------------------------------------------------------------------------------
  
 #--------------------------------------------Apartir de esta linea utilizaremos funciones para inicio de sesion.--------------------------------------------------------------------------
 
 @app.route('/auth', methods=["POST", "GET"])
 def login():
-    url = url_for('index')
+    redirect_cookie_auth()
+    cookie100ban = request.cookies.get(cookie100)
     redirigir_en_caso_existir_session()
-    if request.method == 'POST':
-        try:
-            ip = request.remote_addr  # Obtener la IP del cliente
-            if check_block_ip(ip):
-                send_mail_danger()
-                return render_template('auth/login.html')
 
-            usuario = request.form.get('email')
-            contraseña = request.form.get('contraseña')
-            hashpassword = hashlib.sha256()
-            hashpassword.update(contraseña.encode('utf8'))
-            hash_value = hashpassword.hexdigest()
-
-            cur = mysql.connection.cursor()
-            cur.execute("SELECT * FROM usuarios WHERE email = %s ", (usuario,))
-            user = cur.fetchone()
-            cur.close()
-
-            if user is not None:
-                print("el usuario se encontro en la base de datos")
-                contraseñaalma = user[5]
-                if hash_value == contraseñaalma:
-                    print("La contrasena coincide")
-                    session['id'] = user[0]
-                    session['idgenuine'] = user[1]
-                    session['nombre'] = user[2]
-                    session['apellido'] = user[3]
-                    session['usuario'] = user[4]
-                    session['api'] = user[6]  # Set the 'api' key in the session dictionary
-                    session['datos'] = user[8]
-                    cur1 = mysql.connection.cursor()
-                    cur1.execute("SELECT * FROM verificacion WHERE idusuario = %s", (session['idgenuine'],))
-                    verificacion = cur1.fetchone()
-                    cur1.close()
-
-                    if verificacion is not None:
-                        print("Verificacion se encontro")
-                        session['verificado'] = verificacion[1]
-                        if session['verificado'] == "NO":
-                            print("Verificacion es igual a no")
-                            return redirect (url_for('verificacion'))
-                        
-                        else:
-                            if session['datos'] == 'NO':
-                                return redirect(url_for('datos'))
-                            else:
-                                if ip in failed_login_attempts:
-                                            del failed_login_attempts[ip]
-                            manejar_datos_ip()
-                            return twofactor(url)
-                    else:
-                        return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
-                else:
-                    incrementar_intentos(ip, usuario)
-                    print("la contrasena no coincide")
-                    return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
-            else:
-                print("la contrasena no coincide")
-                return render_template('auth/login.html', error='Usuario o contraseña incorrecto')
-        except Exception as e:
-            traceback.print_exc()
-            return render_template('auth/login.html', errorL=error100, email='', contraseña='')
-    else:
-        url = url_for('index')
+    if cookie100ban == "TRUE":
+        send_mail_danger()
         return render_template('auth/login.html')
 
+    if request.method == 'POST':
+        return handle_login_post_request()
+    else:
+        return render_login_template()
 
+def handle_login_post_request():
+    try:
+        usuario = request.form.get('email')
+        password = request.form.get('contraseña')
+        reminder = request.form.get('reminder')
+        hash_value = hash_password(password)
 
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM usuarios WHERE email = %s ", (usuario,))
+        user = cur.fetchone()
+        cur.close()
 
-# Diccionario para almacenar los intentos de inicio de sesión fallidos por IP
-failed_login_attempts = {}
-
-# Diccionario para almacenar las IP bloqueadas y el tiempo en que deben ser desbloqueadas
-blocked_ips = {}
-
-# Duración del bloqueo en minutos
-bloqueo_duracion_minutos = 30
-
-# Función para verificar si una IP debe ser bloqueada
-def check_block_ip(ip):
-    if ip in blocked_ips:
-        tiempo_desbloqueo = blocked_ips[ip]
-        if datetime.now() < tiempo_desbloqueo:
-            return True
+        if user is not None:
+            contraseñaalma = user[5]
+            if hash_value == contraseñaalma:
+                set_user_session_data(user)
+                speaklocation()
+                verificacion = get_user_verification_data(user)
+                if verificacion is not None:
+                    return handle_verification(verificacion, usuario, url = url_for('index'))
+                else:
+                    incrementar_intentos(usuario)
+                    if failed_login_attempts[usuario] >= 4:
+                        response = make_response(render_template('auth/login.html'))
+                        response.set_cookie(cookie100, 'TRUE', max_age=3600*24*1)
+                        return response
+                    else:
+                        response = make_response(render_template('auth/login.html', error='Usuario o contraseña incorrecto', usuario = '', password = ''))
+                        return response
+            else:
+                incrementar_intentos(usuario)
+                if failed_login_attempts[usuario] >= 4:
+                    response = make_response(render_template('auth/login.html'))
+                    response.set_cookie(cookie100, 'TRUE', max_age=1800, secure=True, httponly=True, samesite='Strict')
+                    return response
+                else:
+                    response = make_response(render_template('auth/login.html', error='Usuario o contraseña incorrecto', usuario = '', password = ''))
+                    return response
         else:
-            del blocked_ips[ip]
-    elif ip in failed_login_attempts and failed_login_attempts[ip] >= 4:
-        tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
-        blocked_ips[ip] = tiempo_desbloqueo
-        del failed_login_attempts[ip]
-        return True
-    return False
+            return render_template('auth/login.html', error='Usuario o contraseña incorrecto', usuario = '', password = '')
+    except Exception as e:
+        traceback.print_exc()
+        return render_template('auth/login.html', errorL=error100, email='', contraseña='')
+
+def render_login_template():
+    return render_template('auth/login.html')
+
+def hash_password(password):
+    hashpassword = hashlib.sha256()
+    hashpassword.update(password.encode('utf8'))
+    return hashpassword.hexdigest()
+
+def set_user_session_data(user):
+    session['id'] = user[0]
+    session['idgenuine'] = user[1]
+    session['nombre'] = user[2]
+    session['apellido'] = user[3]
+    session['usuario'] = user[4]
+    session['api'] = user[6]
+    session['datos'] = user[8]
+
+def get_user_verification_data(user):
+    cur1 = mysql.connection.cursor()
+    cur1.execute("SELECT * FROM verificacion WHERE idusuario = %s", (session['idgenuine'],))
+    verificacion = cur1.fetchone()
+    cur1.close()
+    return verificacion
+
+def handle_verification(verificacion, usuario, url):
+    session['verificado'] = verificacion[1]
+    if session['verificado'] == "NO":
+        return redirect(url_for('verificacion'))
+    else:
+        if session['datos'] == 'NO':
+            return redirect(url_for('datos'))
+        else:
+            if usuario in failed_login_attempts:
+                del failed_login_attempts[usuario]
+            manejar_datos_ip()
+            return twofactor(url)
+
+def incrementar_intentos(usuario):
+    if usuario in failed_login_attempts:
+        failed_login_attempts[usuario] += 1
+    else:
+        failed_login_attempts[usuario] = 1
+
+    print(failed_login_attempts[usuario])
+
+def cookie_log(iduser):
+    cur5 = mysql.connection.cursor()
+    cur5.execute("SELECT * FROM usuarios WHERE idusuarios = %s", (iduser, ))
+    user = cur5.fetchone()
+    session['id'] = user[0]
+    session['idgenuine'] = user[1]
+    session['nombre'] = user[2]
+    session['apellido'] = user[3]
+    session['usuario'] = user[4]
+    session['api'] = user[6]
+    session['datos'] = user[8]
+    speaklocation()
+    cur6 = mysql.connection.cursor()
+    cur6.execute("SELECT * FROM verificacion WHERE idusuario = %s",(session['idgenuine'], ))
+    verificacion = cur6.fetchone()
+    if verificacion is not None:
+        session['verificado'] = verificacion[1]
+        print(session['verificado'])
+    return redirect(url_for ('index'))
+
+def redirect_cookie_auth():
+    cookie_auth_authentication_done = request.cookies.get('data_reminder_user')
+    if cookie_auth_authentication_done is not None:
+            iduser = cookie_auth_authentication_done
+            cookie_log(iduser)
 
 
 def send_mail_danger():
@@ -440,18 +472,25 @@ def send_mail_danger():
 
 
 
-def incrementar_intentos(ip, usuario):
-                if ip in failed_login_attempts:
-                    print("Incremento la ip intentos")
-                    failed_login_attempts[ip] += 1
-                    session['failed_login_attemptsemail'] = usuario
-                else:
-                    failed_login_attempts[ip] = 1
+# Diccionario para almacenar los intentos de inicio de sesión fallidos por IP
+failed_login_attempts = {}
 
-                    # Verificar si se alcanzó el límite de intentos fallidos
-                if failed_login_attempts[ip] >= 4:
-                        tiempo_desbloqueo = datetime.now() + timedelta(minutes=bloqueo_duracion_minutos)
-                        blocked_ips[ip] = tiempo_desbloqueo
+
+
+
+def incrementar_intentos(usuario):
+    if usuario in failed_login_attempts:
+        failed_login_attempts[usuario] += 1
+        session['failed_login_attemptsemail'] = usuario
+        print(failed_login_attempts[usuario])
+    else:
+        failed_login_attempts[usuario] = 1
+        print(failed_login_attempts[usuario])
+
+    # Verificar si se alcanzó el límite de intentos fallidos
+    
+        
+
 
 def manejar_datos_ip():
                 session['logued'] = True
@@ -464,102 +503,83 @@ def manejar_datos_ip():
                 session['MM'] = datos[3]
                 session['DD'] = datos[4]
                 session['gender'] = datos[5]
-                print("manejar datos esta funcionando")
                 cur3 = mysql.connection.cursor()
                 cur3.execute("SELECT * FROM preferencias WHERE idusuarios = %s",
                              (session['idgenuine'],))
                 preferencias = cur3.fetchone()
                 if preferencias is None:
-                    print("Se encontro pereferencias")
                     cur4 = mysql.connection.cursor()
                     cur4.execute("INSERT INTO preferencias VALUES (%s, %s, %s)",
                                  (session['idgenuine'], "TRUE", "FALSE"))
-                print("el else de manejar datos esta funcionando")
 
 
 @app.route('/2factor', methods=['POST', 'GET'])
 def twofactorpage():
     try:
-        idusuario = session['idgenuine']
-        if request.method == 'POST':
-            code1 = str(request.form.get('code1'))
-            code2 = str(request.form.get('code2'))
-            code3 = str(request.form.get('code3'))
-            code4 = str(request.form.get('code4'))
-            result = code1 + code2 + code3 + code4
-            reminder = request.form.get('reminderdevice')
-            print (result)
-
-            # Consultaremos si el código en la base de datos es el mismo dado por el usuario
-            verification_code = mysql.connection.cursor()
-            verification_code.execute("SELECT codigo FROM verificacion WHERE idusuario = %s", (idusuario, ))
-            row = verification_code.fetchone()
-
-            if row is not None:
-                verification = row[0]
-                verification_code.close()  # Cerrar el cursor después de obtener los resultados
-
-                if verification == result:
-                    if reminder:
-                        ip = obtener_ip_publica()  # Obtener la IP del cliente
-                        print(ip)
-                        cur5 = mysql.connection.cursor()
-                        cur5.execute("INSERT INTO ip_access VALUES (%s, %s)", (session['idgenuine'], ip,))
-                        mysql.connection.commit()
-                        cur5.close()
-                        return redirect(url_for('index'))
-                    else:
-                        return redirect(url_for('index'))
-                else:
-                    return render_template('2factor.html', error='Código incorrecto',
-                                           codigo='', codigo1='', codigo2='', codigo3='', codigo4='')
-            else:
-                verification_code.close()  # Cerrar el cursor si no hay resultados en la consulta
-                return render_template('2factor.html')
+        notrequired = request.cookies.get('2factor')
+        if notrequired == session.get('idgenuine'):
+            response = make_response(redirect(url_for('index')))
         else:
-            return render_template('2factor.html')
+            idusuario = session.get('idgenuine')
+            if request.method == 'POST':
+                code1 = str(request.form.get('code1'))
+                code2 = str(request.form.get('code2'))
+                code3 = str(request.form.get('code3'))
+                code4 = str(request.form.get('code4'))
+                result = code1 + code2 + code3 + code4
+                reminder = request.form.get('reminderdevice')
+
+                verification_code = mysql.connection.cursor()
+                verification_code.execute("SELECT codigo FROM verificacion WHERE idusuario = %s", (idusuario,))
+                row = verification_code.fetchone()
+
+                if row is not None:
+                    verification = row[0]
+                    verification_code.close()
+
+                    if verification == result:
+                        if reminder:
+                            response = make_response(redirect(url_for('index')))
+                            response.set_cookie('2factor', idusuario, max_age=3600*24*30)
+                            response.set_cookie('data_reminder_user', idusuario, max_age=3600*24*30)
+                        else:
+                            response = make_response(redirect(url_for('index')))
+                    else:
+                        return render_template('2factor.html', error='Código incorrecto',
+                                               codigo='', codigo1='', codigo2='', codigo3='', codigo4='')
+                else:
+                    verification_code.close()
+                    return render_template('2factor.html')
+            else:
+                response = make_response(render_template('2factor.html'))
+
+        return response
+
     except Exception as e:
-        # Manejo de excepciones
         print("Error en twofactorpage:", str(e))
         return render_template('2factor.html', message='Se produjo un error')
 
 
 
+
+
+
 # Aquí se manejarán funciones de autenticación.
 def twofactor(url):
-    idusuario = session.get('idgenuine')
-    twof = mysql.connection.cursor()
-    try:
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM ip_access WHERE idusuarios = %s", (idusuario,))
-        rows = cursor.fetchall()
-        cursor.close()
-        if rows:
-            roww = rows[0]
-            ip_address_computer = roww[1]
-            ip = obtener_ip_publica()
-            print(ip)
-            if ip_address_computer == ip:
+    notrequired = request.cookies.get('2factor')
+    try:        
+        if notrequired == session['idgenuine']:
                 return redirect(url_for('index'))
         else:
-            twof.execute("SELECT 2factor FROM preferencias WHERE idusuarios = %s", (idusuario,))
-            row = twof.fetchone()
-            twof.close()
-            if row is not None:
-                factor = row[0]
-                if factor == "TRUE":
-                    print("Se está enviando a la página 2factor")
-                    if 'correo_2factor' not in session or not session.get('correo_2factor'):
+            if notrequired is None:
+                    if 'already_sent' not in session or session['already_sent']:
                         enviar_correo_2factor()
-                    print("debió enviarse el correo")
+                    else:
+                        print("Ya se envió un correo.")
                     return redirect(url_for('twofactorpage'))
-                else:
-                    print("Se está enviando al índice")
-                    print(factor)
-                    return redirect(url)
             else:
-                print("No se encontraron resultados para el usuario")
-                return url
+                enviar_correo_2factor()
+                return redirect(url_for('twofactorpage'))
     except Exception as e:
         print("Error en la consulta SQL:", str(e))
         return redirect(url)
@@ -586,15 +606,13 @@ def enviar_correo_2factor():
                         Por favor, introduce el código para iniciar sesión. Si no has solicitado un código, 
                         te recomendamos cambiar tu contraseña lo antes posible."""
         destinario = session['usuario']
-        session['correo_2factor'] = True
-
+        session['alreay_sent'] = True
         return enviar_correo(destinario, asunto, contenido)
     except Exception as e:
         # Manejo de excepciones
         print("Error en enviar_correo_2factor:", str(e))
         return None
-
-            
+        
 
 #funcion para redirigir en caso de existir sesion.
 def redirigir_en_caso_existir_session():
@@ -603,13 +621,6 @@ def redirigir_en_caso_existir_session():
 
 
 #--------------------------------------------------Fin de funciones de seguridad de inicio de session-------------------------------------------------------------------------------------
-
-
-
-
-
-
-
 
 
 
@@ -709,19 +720,16 @@ def resend():
 def settings():
     return render_template('settings.html')
 
-
-
-
-
 # Cierre de sesión
 @app.route('/salir')
 def salir():
-    email_usuario = session.get('idgenuine')
-    session.clear()
-    return redirect(url_for('home'))
+    response = session.clear()
+    response = make_response(redirect(url_for('home')))
+    response.set_cookie('data_reminder_user', '', expires=0)
+    return response
+
+
 # Ruta principal, chat
-
-
 @app.route('/')
 def index():
     nombre = session['nombre']
@@ -732,18 +740,12 @@ def index():
     return render_template('chat.html', bienvenida = principal_mensaje)
 
 
-
-
-
-
 @app.route('/home')
 def home():
-    redirigir_en_caso_existir_session()
-    return render_template('index.html')
-
-
-
-
+    response = redirect_cookie_auth()
+    response = redirigir_en_caso_existir_session()
+    response = make_response(render_template('index.html', date = datetime.now().year))
+    return response
 
 @app.route('/read/pdf', methods=['GET', 'POST'])
 def read_pdf():
@@ -768,21 +770,19 @@ def read_pdf():
 
 
 
-# Convertir texto a voz utilizando pyttsx3
-def convertir_texto_a_voz(response):
-    idusuario = session['idgenuine']
-    engine = pyttsx3.init()
 
-    engine.save_to_file(response, 'respuesta.wav')
+
+
+def speaklocation():
+    idusuario = session['idgenuine']
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM preferencias WHERE idusuarios = %s", (idusuario,))
+    cur.execute("SELECT * FROM preferencias WHERE idusuarios = %s", (idusuario, ))
     speak = cur.fetchone()
+    cur.close()
     if speak is not None:
-        hablar = speak[1]
-        session['hablar'] = hablar
-        if session['hablar'] == "TRUE":
-            engine.say(response)
-            engine.runAndWait()
+        speak1 = speak[1]
+        session['speak'] = speak1
+
 
 
 
@@ -796,16 +796,17 @@ def guardar_conversaciones(response, mensaje):
 
          
 
-
-
-
+# Convertir texto a voz utilizando pyttsx3
+def convertir_texto_a_voz(response):
+    engine = pyttsx3.init()
+    engine.say(response)
+    engine.runAndWait()
 
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
     mensaje = request.form['user_message']
     key = session['api']
-
     if mensaje.startswith('word:'):
         # Solicitar un trabajo en Word
         content = mensaje[5:].strip()
@@ -818,10 +819,11 @@ def get_response():
         # Obtener respuesta del modelo GPT-3
         try:
             response = obtener_respuesta_gpt3(mensaje, key=key)
-            convertir_texto_a_voz(response)
+            if session['speak'] == "TRUE":
+                convertir_texto_a_voz(response)
+                print ("success")
             guardar_conversaciones(response, mensaje)
             return response
-
         except openai.error.AuthenticationError:
             mensaje_error = 'La API ingresada es incorrecta'
             return mensaje_error
@@ -831,10 +833,13 @@ def get_response():
         except Exception as e:
             mensaje_error = 'Ha ocurrido un error: ' + str(e)
             return mensaje_error
+
+
+
         
 # Ruta para manejar errores 404
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(error):
     return render_template('page_not_found.html')
 
 

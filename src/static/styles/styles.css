@@ -50,7 +50,10 @@ body {
 #user-input input{
     letter-spacing: 0.11em !important;
 }
-#user-input input:focus{
+#user-message:focus{
+    border: 1px solid #2f81f7;
+}
+#user-message:focus{
     outline: none;
 }
 #user-input i{
@@ -58,8 +61,7 @@ body {
 }
 
 #user-message {
-    flex-grow: 1;
-    padding: 20px 15px;
+    padding: 25px 15px;
     width: 400% !important;
     border: none;
     box-shadow: 0 0 10px rgb(0, 0, 0);
@@ -68,19 +70,16 @@ body {
     background: transparent;
     color: white;
     font-weight: 500;
+    height: 75px;
 }
 #user-message::placeholder{
     color: white;
     transition: 0.5s all;
 }
-#user-message:focus::placeholder{
-    margin-left: 100%;
-}
-
 #user-input #send-btn {
     position: absolute;
-    top: 45px;
-    left: 685px;
+    top: 53px;
+    left: 925px;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -146,13 +145,14 @@ body {
 }
 #user-input #audio-btn {
     position: absolute;
-    top: 45px;
-    left: 745px;
+    top: 53px;
+    left: 825px;
     background-color: transparent;
     border: none;
     cursor: pointer;
     font-size: 1.95em;
     color: white;
+    width: 10%;
 }
 
 .message-content {

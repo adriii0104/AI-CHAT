@@ -1,13 +1,3 @@
-import requests
+#esta sesion es para bloquear tipos de usuarios. siendo por seguridad u cualquier otra opcion
 
-def obtener_ip_publica():
-    try:
-        response = requests.get('https://api.ipify.org?format=json')
-        if response.status_code == 200:
-            data = response.json()
-            ip_publica = data['ip']
-            return ip_publica
-        else:
-            print('No se pudo obtener la IP pública:', response.status_code)
-    except requests.RequestException as e:
-        print('Error en la solicitud:', str(e))
+cookie100 = "MnSK%eRASStruffssmalt$%#essm-ddkasPSK%eRASStruffssmalt$%#essm-ddkas4SK%eRASStruffssmalt$%#essm-ddkas%eSK%eRASStruffssmalt$%#essm-ddkas%SK%eRASStruffssmalt$%#essm-ddkas20dSK%eRASStruffssmalt$%#essm-ddkassAs-rSK%eRASStruffssmalt$%#essm-ddkasPTP%effSK%eRASStruffssmalt$%#essm-ddkasASK%SK%eRSK%eRASStruffssmalt$%#essm-ddkasASStruffssmalt$%#essm-ddkaseRASStSK%eRASStruffssmalt$%#essm-ddkasruffssmaSK%eRASStruffssmalt$%#essm-ddkasSK%eRASStruffssmalt$%#essm-ddkaslt$%#essm-dSK%eRASStruffssmalt$%#essm-ddkaskasSK%eRASStruffssmalt$%#essm-ddkas-MnPt4SK%eRASStruffssmalt$%#essm-ddkas%e%20dsAs-rPTSK%eRASStruffssmalt$%#essm-ddkasP%effAs-identification-cookie-blocked"

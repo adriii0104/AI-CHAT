@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-family: "Poppins", sans-serif !important;
     letter-spacing: 0.07em;
     transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
     
@@ -146,7 +146,7 @@ a:hover{
 #texto{
     font-size: 1.2em !important;
 }
-@media screen and (min-width: 000px) and (max-width: 1046px) {
+@media screen and (min-width: 000px) and (max-width: 1436px) {
     *{
         zoom: 98%; 
         transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
@@ -179,16 +179,29 @@ a:hover{
         left: 0;
         top: 0;
     }
+    header{
+        padding: 58px 100px !important;
+        max-height: 65px;
+    }
 
-    .navigation a:nth-child(6) {
-        position: fixed;
-        top: 12% !important;
-        left: 45% !important;
-        width: 25%;
+
+    #lg-register-btn{
+        position: absolute !important;
+        top: 128% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+    #lg-register-btn a{
         text-align: center;
         transform: translate(-50%, -50%);
         transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
+        background-color: #fff;
+        padding: 15px 75px !important;
+        border-radius: 4pt;
+        color: black !important;
+        font-size: 15px;
     }
+    
     #night-day{
         left: 0;
         top: 0;
@@ -213,32 +226,6 @@ a:hover{
         transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
     }
   }
-  @media screen and (min-width: 000px) and (max-width: 600px) {
-    nav{
-        display: flex;
-        margin-left: -25px !important;
-        transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
-    }
-    .navigation a:nth-child(5) {
-        display: none;
-    }
-    .navigation a:nth-child(6) {
-        position: fixed;
-        top: 14% !important;
-        left: 45% !important;
-        width: 25%;
-        text-align: center;
-        transform: translate(-50%, -50%);
-        transition: cubic-bezier(0.18, 0.89, 0.32, 1.27) 0.5s;
-    }
-    #texto{
-        font-size: 0.8em !important;
-    }
-    #txt{
-        min-width: 100% !important;
-        max-height: 11%;
-    }
-  }
   title{
     display: block !important;
   }
@@ -259,4 +246,13 @@ a:hover{
 }
 .active {
 color: #2f81f7 !important;
+}
+@media screen and (min-width: 000px) and (max-width: 736px) {
+
+.navigation a:nth-child(5) {
+    display: none;
+}
+.navigation a:nth-child(4) {
+    display: none;
+}
 }

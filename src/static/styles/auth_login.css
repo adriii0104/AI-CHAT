@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'SF Pro Display', sans-serif;
+    font-family: "Poppins", sans-serif !important;
     color: white;
 }
 
@@ -16,21 +16,21 @@ body {
 
 .content {
     position: fixed;
-    top: 54%;
-    left: 52%;
+    top: 55%;
+    left: 51%;
     transform: translate(-50%, -50%);
     width: 700px;
     background: #242424;
-    height: 700px;
+    height: 660px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     border-radius: 4pt;
-    font-family: "Poppins", sans-serif !important;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
 }
 
 #altern-log i {
+    margin-right: 30px;
     padding: 10px 12px;
     border-radius: 4pt;
     background-color: #96969631;
@@ -40,33 +40,39 @@ body {
     width: 100%;
     height: 62px;
     border-radius: 3pt;
-    border: 0.5px solid #7979794f;
+    border: 1.5px solid #7979794f;
     padding-bottom: -10px;
     padding-left: 7px;
     cursor: auto;
     letter-spacing: 0.16em;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     background: transparent;
 }
+.user-box input:focus{
+    border: 1px solid #2f81f7;
+}
 .content .user-box {
-    width: 100%;
-    font-family: "Poppins", sans-serif !important;
+    margin-top: 15px;
+    width: 120%;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
 }
 
 .content button {
-    width: 100%;
+    width: 120%;
     height: 45px;
     color: rgba(150, 150, 150, 0.69);
     background-color: rgba(150, 150, 150, 0.192);
     border-color: #0000;
     border-radius: 3pt;
     font-size: 0.9em;
-    font-family: "Poppins", sans-serif !important;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
 }
 .user-box{
     position: relative;
 }
 .user-box label{
     letter-spacing: 0.16em;
+    font-family:'Poppins', sans-serif !important;
     position: absolute;
     top: 0;
     left: 0;
@@ -78,7 +84,6 @@ body {
     color: rgba(255, 255, 255, 0.69);
     font-weight: lighter;
     letter-spacing: 0.15em;
-    font-family: "Poppins", sans-serif !important;
 }
 .user-box input:focus~label,
 .user-box input:valid~label{
@@ -100,41 +105,45 @@ outline: none;
 }
 .password-toggle {
     position: absolute;
-    top: 55%;
+    top: 71%;
     right: 10px;
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
     cursor: pointer;
+    font-family:'Poppins', sans-serif !important;
   }
 
 .content .close {
     color: white !important;
-    margin-left: 128%;
-    margin-top: -7.9%;
+    margin-left: 154.4%;
+    margin-top: -29.2%;
     font-size: 2.5em;
     text-align: center;
     width: 50px;
     height: 40px;
-    border-radius: 155px;
+    border-radius: 155% !important;
+    font-family:'Poppins', sans-serif !important;
 
 }
 
 .content p {
     font-weight: 700;
     font-size: 1.70em;
-    font-family: "Poppins", sans-serif !important;
+    font-family:'Poppins', sans-serif !important;
 }
 
 .log-in-card {
-    margin-top: 70px;
-    margin-left: -50px;
+    margin-top: 105px;
+    margin-left: -75px;
+    font-family:'Poppins', sans-serif !important;
 
 }
 
 .terms-and-conditions .field {
     color: #2c2c2cb0;
     font-weight: lighter;
+    font-family:'Poppins', sans-serif !important;
 }
 
 .terms-and-conditions span {
@@ -154,17 +163,12 @@ outline: none;
     font-weight: lighter !important;
     cursor: pointer;
     margin-bottom: 18px;
-    color: #b4b4b4;
 
-}
-.redirect:hover{
-    color: #2f81f7 !important;
 }
 #altern-log p{
     font-size: 0.95em;
     margin-bottom: 20px;
     font-weight: 500;
-    font-family: "Poppins", sans-serif !important;
 }
 .footer{
     font-size: 0.75em !important;
@@ -173,14 +177,14 @@ outline: none;
 }
 .error{
     font-size: 0.95em;
-    font-family: "Poppins", sans-serif !important;
+    font-family:'Poppins', sans-serif !important;
 }
 .error-email{
     font-size: 0.95em !important;
     color: red;
     text-align: center;
     margin-top: 20px;
-    font-family: "Poppins", sans-serif !important;
+    font-family:'Poppins', sans-serif !important;
 }
 .spinner {
     display: none; /* Ocultar el spinner inicialmente */
@@ -203,6 +207,17 @@ outline: none;
   a:nth-child(6){
     margin-left: 425px !important;
   }
-  .navigation{
-    font-weight: bold !important;
+  .navigation a{
+    letter-spacing: none !important;
   }
+  .loguer{
+    position: absolute;
+    top: 150% !important;
+    left: 49% !important;
+    transform: translate(-50%, -50%) !important;
+    background-color: white !important;
+    color: black !important;
+    padding: 12px 95px !important;
+    border-radius: 3pt !important;
+    display: block !important;
+}

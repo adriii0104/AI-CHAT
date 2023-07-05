@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-family: "Poppins", sans-serif !important;
     letter-spacing: 0.07em;
     color: white !important;
 }
@@ -163,3 +163,15 @@ a:nth-child(6){
   a:nth-child(6):hover{
     color: #2f81f7 !important;
   }
+  .loguer{
+    position: absolute;
+    top: 150% !important;
+    left: 49% !important;
+    transform: translate(-50%, -50%) !important;
+    background-color: white !important;
+    color: black !important;
+    padding: 12px 95px !important;
+    border-radius: 3pt !important;
+    display: block !important;
+}
+  

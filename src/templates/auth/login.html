@@ -5,8 +5,7 @@
 {% block body %}
 
 {% block a %}
-<a href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}>Login</a>
-<a href="{{ url_for('register') }}" {% if request.path == url_for('register') %}class="active"{% endif %}>Register</a>
+<a class="loguer" href="{{ url_for('register') }}" {% if request.path == url_for('register') %}class="active"{% endif %}>Register</a>
 {% endblock %}        
 
 <head>
@@ -33,23 +32,23 @@
   <div class="log-in-card">
     <div class="close">
       <a href="{{ url_for('home') }}">
-        <i class="fi fi-ss-rectangle-xmark"></i>
+        <i class="fi fi-bs-power"></i>
       </a>
     </div>
 
-    <p>Log in your account </p><br><br><br>
+    <p>Log in your account </p>
     <div id="altern-log">
-      <p>Sign in with</p><br>
+      <p>Sign in with</p>
       <i class="fi fi-brands-apple"></i>
       <i class="fi fi-brands-google"></i>
       <i class="fi fi-brands-facebook"></i>
       <i class="fi fi-brands-github"></i>
       <i class="fi fi-brands-microsoft"></i>
-    </div><br><br><br><br>
+    </div><br><br>
 
     <div id="text-indication">
       <p class="log">Or log with Mail</p>
-      <ul class="flash-messages">
+      <ul class="flash-messages" style="list-style: none;">
       {% with messages = get_flashed_messages() %}
   {% if messages %}
 
@@ -73,12 +72,12 @@
 
     <form method="post">
       <div class="user-box">
-        <input type="text" id="email" oninput="validate()" name="email" autocomplete="off" required>
+        <input type="text" id="email" oninput="validate()" list="emailOptions" name="email" autocomplete="off" required>
         <label for="email">Email</label>
       </div><br>
       
       <div class="user-box">
-        <input type="password" id="contraseña" name="contraseña" autocomplete="new-password" oninput="validate()" required>
+        <input type="password" id="password" name="contraseña" autocomplete="new-password" oninput="validate()" required>
         <label for="password">Password</label>
       </div>
       <br>
@@ -94,7 +93,7 @@
           var error = '{{ error}}'
           if (error) {
                   document.getElementById("email").style.border = "1px solid red";
-                  document.getElementById("contraseña").style.border = "1px solid red";
+                  document.getElementById("password").style.border = "1px solid red";
                   document.getElementById("error").innerHTML = "Email or password not found";
         }}
       </script>
@@ -102,6 +101,9 @@
       <a href="{{ url_for ('register') }}">
       <p class="redirect">¿Don't have an account?</p>
       </a>
+      <p style="font-size: 12px;">
+        Al iniciar sesión, estás aceptando las condiciones de uso del chat bot.
+      </p><br>
 
 
       <button class="i-button-register" id="button" disabled="true">Log In</button><br><br><br><br><br>
