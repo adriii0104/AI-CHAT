@@ -44,7 +44,7 @@ body {
     cursor: pointer;
 }
 #txt {
-    background-color: #1d1d1d !important;
+    background-color: rgb(35, 46, 53);
     width: 50% !important;
     height:25% !important;
     position: absolute;
@@ -105,7 +105,7 @@ body {
     padding: 11px 15px;
     border-radius: 15px;
     border: none;
-    background: rgb(32, 32, 32);
+    background-color: rgb(35, 46, 53);
     font-weight: 600;
 }
 #search input:focus~label,
@@ -155,7 +155,7 @@ body {
 }
 a:nth-child(6){
     margin-left: 425px !important;
-    background: #ffffff;
+    background-color: rgb(35, 46, 53);
     color: black !important;
     padding: 12px 22px;
     border-radius: 4pt;
@@ -168,8 +168,8 @@ a:nth-child(6){
     top: 150% !important;
     left: 49% !important;
     transform: translate(-50%, -50%) !important;
-    background-color: white !important;
-    color: black !important;
+    background-color: rgb(35, 46, 53);
+    color: rgb(255, 255, 255) !important;
     padding: 12px 95px !important;
     border-radius: 3pt !important;
     display: block !important;

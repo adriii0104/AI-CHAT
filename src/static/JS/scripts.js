@@ -150,16 +150,74 @@ function sendRequest(message) {
     xhr.send(`user_message=${encodeURIComponent(message)}`);
 }
 
-// Función para hablar la respuesta del bot
-function speakResponse(response) {
-    const utterance = new SpeechSynthesisUtterance(response);
-    utterance.lang = 'es';
-    speechSynthesis.speak(utterance);
-}
 
 // Función para desplazarse hasta el fondo del chat
 function scrollToBottom() {
     messageList.scrollTop = messageList.scrollHeight;
 }
+
+const checkboxes = document.querySelectorAll('.use');
+  
+checkboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', (event) => {
+    const isChecked = event.target.checked;
+    const checkboxName = event.target.name;
+    
+    if (isChecked) {
+      checkboxes.forEach((checkbox) => {
+        if (checkbox.name !== checkboxName) {
+          checkbox.checked = false;
+        }
+      });
+    }
+  });
+});
+var speakk = "FALSE";
+function speak() {
+    var checkboxn = document.getElementById("speak");
+    if (checkboxn.checked) {
+        speakk = "TRUE";
+        console.log(speakk)
+    }else{
+        speakk ="FALSE";
+        console.log(speakk)
+    }
+}
+
+
+
+// Función para hablar la respuesta del bot
+function speakResponse(response) {
+    if (speakk == "TRUE") {
+    const utterance = new SpeechSynthesisUtterance(response);
+    utterance.lang = 'es';
+    speechSynthesis.speak(utterance);
+    console.log(speechSynthesis)
+}
+}
+
+const chatWindow = document.getElementById('chat-window');
+const userMessage = document.getElementById('user-message');
+
+function updateChatHeight() {
+  const chatContainer = document.querySelector('.chat-container');
+  const chatContainerHeight = chatContainer.clientHeight;
+  const userInputHeight = userMessage.scrollHeight;
+  const maxHeight = chatContainerHeight - userInputHeight - 20;
+  chatWindow.style.maxHeight = maxHeight + 'px';
+}
+
+function resetChatHeight() {
+  chatWindow.style.maxHeight = '';
+}
+
+userMessage.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = this.scrollHeight + 'px';
+  updateChatHeight();
+});
+
+userMessage.addEventListener('focus', updateChatHeight);
+userMessage.addEventListener('blur', resetChatHeight);
 
 

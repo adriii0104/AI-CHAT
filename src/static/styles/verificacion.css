@@ -20,7 +20,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 580px;
-    background: #242424;
+    background-color: rgb(35, 46, 53);
     height: 600px;
     display: flex;
     flex-direction: column;

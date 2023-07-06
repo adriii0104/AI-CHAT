@@ -1,6 +1,8 @@
 
 {% extends 'plantillas/plantilla-chat.html' %}
 {% block title %}GenuineChat - Chat{% endblock %}
+{% block a %}
+{% endblock %}
     {% block chat %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
@@ -9,44 +11,97 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css'>
 </head>
 
-    <div id="chat-window">
-        
-        <ul id="message-list">
-             {% if bienvenida %}
-            <li class="message bot-message">
-                <p class="message-content">
-                    {{ bienvenida }}
-                </p>
-            </li>
-             {% endif %}
-
-        </ul>
-    </div>
-    <div class="chat-container">
-        <div id="user-input">
-            <form id="user-form" onsubmit="event.preventDefault(); sendMessage();">
-                <textarea id="user-message" placeholder="Write a message..." autocomplete="off" style="font-family: 'Poppins', sans-serif !important; max-width: 350%;" cols="30" rows="10"></textarea>
-                <input type="hidden" id="user-message" />
-                <button type="submit" id="send-btn"><i class="fi fi-tr-paper-plane-top"></i></button>
-                <button type="button" id="audio-btn" onclick="startListening()"><i class="fi fi-tr-circle-microphone"></i></button>
-            </form>
+<div id="chat-window">
+  <ul id="message-list">
+    {% if bienvenida %}
+    <li class="message bot-message">
+      <p class="message-content">
+        {{ bienvenida }}
+      </p>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+<div class="chat-container">
+  <div id="user-input">
+    <form id="user-form" onsubmit="event.preventDefault(); sendMessage();">
+      <div class="user-box">
+        <div class="input-container">
+          <textarea id="user-message" placeholder="Write a message..." autocomplete="off" style="font-family: 'Poppins', sans-serif !important; max-width: 350%;" cols="30" rows="1"></textarea>
+          <div class="button-container">
+            <button type="button" id="audio-btn" onclick="startListening()"><i class="fi fi-tr-circle-microphone"></i></button>
+            <button type="submit" id="send-btn"><i class="fi fi-tr-paper-plane-top"></i></button>
+          </div>
         </div>
-        <div class="regulations">
-        <p style="font-family: 'Poppins', sans-serif !important;">
-            This is a free bot. GENUINE is not responsible for the use you make of the chat, in accordance with <span><a href="">regulations</a></span> . UPDATE JUNE 5th.
-        </p>
-    </div>
-    </div>
+      </div>
+    </form>
+  </div>
+</div>
 
+        <div class="regulations">
+          <p style="font-family: 'Poppins', sans-serif !important;">
+            This is a free bot. GENUINE is not responsible for the use you make of the chat, in accordance with <span><a href="">regulations</a></span>. UPDATE JUNE 5th.
+          </p>
+        </div>
+      </div>      
+    </div>
+    <div id="preferences">
+        <div class="first-cape">
+          <ul style="list-style: none;">
+            <li>
+              Speak
+              <label class="toggle-switch">
+                <input type="checkbox" id="speak" onchange="speak()">
+                <span class="switch"></span>
+              </label>
+              <p style="font-size: 0.85em; color: #6868687a;">Activa una acción personalizada</p>
+            </li>
+            <li>
+              Children safety
+              <label class="toggle-switch">
+                <input type="checkbox" name="children-safety" class="use">
+                <span class="switch"></span>
+              </label>
+              <p style="font-size: 0.85em; color: #6868687a;">Protege lo que consultan tus hijos</p>
+            </li>
+            <li>
+              Filter answers
+              <label class="toggle-switch">
+                <input type="checkbox" name="filter-answers" class="use">
+                <span class="switch"></span>
+              </label>
+              <p style="font-size: 0.85em; color: #6868687a;">Filtra las respuestas que puedan no ser de agrado.</p>
+            </li>
+            <li>
+              Only homework
+              <label class="toggle-switch">
+                <input type="checkbox" name="only-homework" class="use">
+                <span class="switch"></span>
+              </label>
+              <p style="font-size: 0.85em; color: #6868687a;">Genuine desarrollará un poco más las respuestas.</p>
+            </li>
+            <a href="{{ url_for('index') }}">
+            <div class="last-div">
+              <a href="{{ url_for('index') }}" {% if request.path == url_for('index') %}class="active"{% endif %}>Home</a>
+            </div>
+          </a>
+            <div class="last-div">
+              <a style="font-weight: bold; font-family: 'Poppins', sans-serif;" href="{{ url_for ('read_pdf') }}">PDF Read</a>
+            </div>
+            <div class="last-div">
+              <a href="{{ url_for('salir') }}" style="background: transparent; color: white !important; font-weight: 600; ">Logout  <i class="fi fi-ss-exit"></i></a>
+            </div>
+          <p style="font-size: 0.65em; font-weight: bold; font-family: 'SF Pro Display', sans-serif; color: rgba(150, 150, 150, 0.603);" class="identificador user-recognititon">ID: {{ session['idgenuine' ]}}</p>
+        </div>
+      </div>
+    </div>
     <div id="profile">
         <div class="profileuser">
 
         </div>
         </div>
-        <p style="font-size: 0.65em; font-weight: bold; font-family: 'SF Pro Display', sans-serif; color: rgba(150, 150, 150, 0.603);" class="identificador user-recognititon">ID: {{ session['idgenuine' ]}}</p>
-   
     <script>
-
+        var speak = '{{ session["speak"] }}'
     </script>
     <script src="{{ url_for('static', filename='JS/scripts.js') }}"></script>
 </body>

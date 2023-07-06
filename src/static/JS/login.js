@@ -21,7 +21,7 @@ function validate() {
   button.style.backgroundColor = isFormValid ? "white" : "#96969631";
   button.style.cursor = isFormValid ? "pointer" : "default";
   
-}  
+}
 document.getElementById('button').addEventListener('click', function() {
   showSpinner(this);
 });

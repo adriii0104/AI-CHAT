@@ -38,7 +38,7 @@ select{
     left: 50%;
     transform: translate(-50%, -50%);
     width: 580px;
-    background: #242424;
+    background-color: rgb(35, 46, 53);
     height: 700px;
     display: flex;
     flex-direction: column;
@@ -152,6 +152,12 @@ outline: none;
 .terms-and-conditions .field {
     color: #2c2c2cb0;
     font-weight: lighter;
+}
+a{
+  position: fixed;
+  top: 10%;
+  left: 17%;
+  transform: translate(-50%,-50%);
 }
 
 .terms-and-conditions span {

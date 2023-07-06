@@ -16,7 +16,6 @@ body {
     position: fixed;
     bottom: 0;
     margin-top: -10px;
-
 }
 
 .chat-container {
@@ -29,14 +28,16 @@ body {
 
 #chat-window {
     position: relative !important;
-    margin-top: 110px;
+    left: 0 !important;
+    margin-top: 10px;
     margin-bottom: 120px;
     padding: 20px;
-    max-height: 700px;
+    max-height: 660px;
     overflow-y: auto;
     font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     display: flex;
     flex-direction: column-reverse; /* Cambio en la dirección de la columna */
+    margin-left: -1.1%;
 }
 
 #user-input {
@@ -76,6 +77,9 @@ body {
     color: white;
     transition: 0.5s all;
 }
+#user-input{
+  margin-left: -12%;
+}
 #user-input #send-btn {
     position: absolute;
     top: 53px;
@@ -109,35 +113,45 @@ body {
 .message {
     margin-bottom: 10px;
     padding: 8px;
-    border-radius: 5px;
+    left: 0;
     font-family: "Poppins", sans-serif;
 }
 
 .user-message {
+  position: relative;
+  left: 0 !important;
     height: auto;
-    width: 75%;
+    width: 85%;
     list-style: none;
-    background: rgb(56, 56, 56);
+    left: 0;
+    background-color: #181f29;
+    border-top: 1.5px solid rgb(0, 0, 0);
+    right: 0;
+    overflow: hidden;
+    padding: 25px 500px;
 }
 .user-message p{
-    height: 415px auto;
     list-style: none;
-    background: rgb(56, 56, 56);
+    width: 65% !important;
+    padding: 15px 10px;
 }
 
 
 .bot-message {
-    background-color: rgb(15, 15, 15);
-    height: 75px auto !important;
+  padding: 25px 500px;
     list-style: none;
     border-top: 1px;
-    border-bottom-width: 1px;
-    border-color: rgba(0,0,0,.1);
     border-left: none;
     border-right: none;
     width: 100%;
-    color: white;
+    color: white; 
     font-family: 'Hind Madurai', sans-serif;
+}
+.bot-message p{
+  width: 65% !important;
+}
+li {
+ left: 0 !important;
 }
 
 .voice-message {
@@ -195,7 +209,8 @@ body {
     font-size: 0.75em;
     font-weight: bold;
     position: fixed;
-
+    left: 43%;
+    transform: translate(-50%, -50%);
     text-align: center;
     bottom: 0;
   }
@@ -231,3 +246,86 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background-color: #020405;
   }
+
+  #preferences{
+    position: fixed;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: #181f29;
+    padding: 25px;
+    box-shadow: 0 0 10px rgb(0, 0, 0);
+    font-size: 13px;
+  }
+  .first-cape{
+    position: relative;
+  }
+  .first-cape li{
+    margin-top: 75px;
+  }
+  .first-cape a{
+    margin-top: 75px !important;
+  }
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-left: 10px;
+  }
+  
+  .toggle-switch input {
+    display: none;
+  }
+  
+  .switch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 10px;
+    transition: all 0.3s;
+  }
+  
+  .switch:before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    background-color: white;
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+  
+  .toggle-switch input:checked + .switch {
+    background-color: #2f81f7;
+  }
+  
+  .toggle-switch input:checked + .switch:before {
+    transform: translateX(20px);
+  }
+  .last-div{
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 100px;
+    background-color: rgb(35, 46, 53);
+    border-radius: 4pt;
+    margin-top: 45px;
+    text-align: center;
+  }
+  .last-div:hover{
+    border: 0.5px solid #2f81f7;
+    cursor: pointer;
+  }
+  .last-div a{
+    width: 175% !important;
+  }  
+  .last-div a:hover{
+    color:  #2f81f8 !important;
+  }
+  

@@ -20,8 +20,8 @@ body {
     left: 51%;
     transform: translate(-50%, -50%);
     width: 700px;
-    background: #242424;
-    height: 660px;
+    background-color: rgb(35, 46, 53);
+    height: 700px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -134,7 +134,7 @@ outline: none;
 }
 
 .log-in-card {
-    margin-top: 105px;
+    margin-top: 135px;
     margin-left: -75px;
     font-family:'Poppins', sans-serif !important;
 
@@ -215,8 +215,8 @@ outline: none;
     top: 150% !important;
     left: 49% !important;
     transform: translate(-50%, -50%) !important;
-    background-color: white !important;
-    color: black !important;
+    background-color: rgb(35, 46, 53);
+    color: rgb(255, 255, 255) !important;
     padding: 12px 95px !important;
     border-radius: 3pt !important;
     display: block !important;

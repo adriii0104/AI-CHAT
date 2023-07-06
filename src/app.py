@@ -75,7 +75,7 @@ def obtener_respuesta_gpt3(pregunta, key):
     (These are the user's data. Please do not display or respond with the data unless the user requests it. However,
     please answer all the questions asked.):
 
-    
+    - More information : The one who designed and created this bot called Genuine was the CEO of GENUINE, Adriel Capellan Diaz.
     - Chat name : Genuine
     - User's first name: {session.get('nombre')}
     - User's last name: {session.get('apellido')}
@@ -103,11 +103,12 @@ def obtener_respuesta_gpt3(pregunta, key):
     )
 
     nueva_respuesta = respuesta.choices[0].text.strip()
+    nueva_respuesta = nueva_respuesta.replace("Genuine:", "")
 
     conversaciones.append(f"Usuario: {session.get('nombre')}: {pregunta}")
     conversaciones.append(nueva_respuesta)
     session['conversaciones'] = conversaciones
-    if len(conversaciones) > 10:
+    if len(conversaciones) > 40:
         session['conversaciones'] = []
         conversaciones = []
 
@@ -783,17 +784,6 @@ def speaklocation():
         speak1 = speak[1]
         session['speak'] = speak1
 
-
-
-
-
-respuestasbot = []
-
-def guardar_conversaciones(response, mensaje):
-    conversaciones = response
-    for respuestas in conversaciones:
-         respuestasbot.append(mensaje + " " + respuestas)
-
          
 
 # Convertir texto a voz utilizando pyttsx3
@@ -819,10 +809,6 @@ def get_response():
         # Obtener respuesta del modelo GPT-3
         try:
             response = obtener_respuesta_gpt3(mensaje, key=key)
-            if session['speak'] == "TRUE":
-                convertir_texto_a_voz(response)
-                print ("success")
-            guardar_conversaciones(response, mensaje)
             return response
         except openai.error.AuthenticationError:
             mensaje_error = 'La API ingresada es incorrecta'
